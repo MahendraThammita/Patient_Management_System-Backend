@@ -1,32 +1,37 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-
-dotenv.config();
-const app = express();
-app.use(cors());
-app.use(bodyParser.json);
+const express = require('express')
+const app = express()
+const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const router = express.Router({});
+require('dotenv/config')
 
 const PORT = process.env.PORT || 8090;
-const MONGODB_URI = process.env.MONGODB_URI;
 
-mongoose.connect(MONGODB_URI , {
-    useCreateIndex:true,
-    useNewUrlParser:true,
-    useUnifiedTopology: true,
-    useFindAndModify:false
-} , (err) => {
-    if(err){
-        console.log('Database Error : ' , err.message);
+//Import Routes
+const Health = require('./routes/HelathCheck')
+// const TestR = require('./routes/test-controller')
+
+//Middleware
+// const keycloak = require('./config/keycloak-config.js').initKeycloak();
+// app.use(keycloak.middleware());
+app.use(bodyParser.json())
+app.use(cors())
+
+//routes
+app.use('/',Health)
+// app.use('/test',TestR)
+
+//connecting to the database
+mongoose.connect(
+    process.env.MONGODB_URI,
+    {useNewUrlParser: true , useUnifiedTopology:true},
+    () =>{
+        console.log("connected to the database")
     }
-})
+)
 
-mongoose.connection.once('open' , () => {
-    console.log('DB Connection Stablished Successfuly.');
-})
-
-app.listen(PORT , () =>{
-    console.log('Development Server is Up and Running on Port ' , PORT);
-})
+//server start
+app.listen(PORT, () =>{
+    console.log('server is up and runnig on port :' + PORT);
+});
