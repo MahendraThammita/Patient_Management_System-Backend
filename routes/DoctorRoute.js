@@ -34,7 +34,7 @@ router.post("/register", async (req,res) => {
         doctor.save().then(() => {
             return res.status(201).json("Doctor Added ");
         }).catch((err) => {
-            return res.status(400).json("Something went wrong");
+            return res.status(400).json(err);
         })
     }
 
