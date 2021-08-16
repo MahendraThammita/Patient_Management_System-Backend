@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 
 router.post("/register", async (req,res) => {
 
+    try{
     let employeeID = req.body.employeeID;
     let username = req.body.username;
     let mobileNumber = req.body.mobileNumber;
@@ -12,10 +13,9 @@ router.post("/register", async (req,res) => {
 
     const isExisting = await Receptionist.findOne({"employeeID": employeeID});
 
-    if (isExisting){
-        return res.status(401).json("User already exist!");
-    }
-    else{
+    if (isExisting) {
+        res.json({status:401, message:'user already exist'})
+    } else {
         const salt = await bcrypt.genSalt();
         const hash = await bcrypt.hash(password, salt);
         const user = new Receptionist({
@@ -27,10 +27,14 @@ router.post("/register", async (req,res) => {
         });
 
         user.save().then(() => {
-            return res.status(201).json("User registered");
+            res.json({status:201, message:'user registered'})
         }).catch((err) => {
-            return res.status(400).json("Something went wrong");
+            res.json({status:400,message:err})
         })
+    }
+    }
+    catch(err){
+        console.log(err);
     }
 
 })
