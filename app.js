@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 8090;
 //Import Routes
 const Health = require('./routes/HelathCheck')
 const ReceptionistRouter = require('./routes/ReceptionistRoute');
+const DoctorRouter = require('./routes/DoctorRoute');
 // const TestR = require('./routes/test-controller')
 
 //Middleware
@@ -24,6 +25,7 @@ app.use(cors())
 app.use('/',Health)
 // app.use('/test',TestR)
 app.use('/receptionist', ReceptionistRouter);
+app.use('/doctor', DoctorRouter);
 
 //connecting to the database
 mongoose.connect(
