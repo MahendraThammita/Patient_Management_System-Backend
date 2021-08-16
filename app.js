@@ -1,15 +1,17 @@
-const express = require('express')
-const app = express()
-const mongoose = require('mongoose')
-const bodyParser = require('body-parser')
-const cors = require('cors')
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const router = express.Router({});
-require('dotenv/config')
-
+require('dotenv/config');
+dotenv.config();
+const app = express();
 const PORT = process.env.PORT || 8090;
 
 //Import Routes
 const Health = require('./routes/HelathCheck')
+const ReceptionistRouter = require('./routes/ReceptionistRoute');
 // const TestR = require('./routes/test-controller')
 
 //Middleware
@@ -21,6 +23,7 @@ app.use(cors())
 //routes
 app.use('/',Health)
 // app.use('/test',TestR)
+app.use('/receptionist', ReceptionistRouter);
 
 //connecting to the database
 mongoose.connect(
@@ -33,5 +36,5 @@ mongoose.connect(
 
 //server start
 app.listen(PORT, () =>{
-    console.log('server is up and runnig on port :' + PORT);
+    console.log('server is up and running on port :' + PORT);
 });
