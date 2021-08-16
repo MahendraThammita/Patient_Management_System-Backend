@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Receptionist = require('../modals/Receptionist');
+const bcrypt = require("bcrypt");
 
 
 router.post("/register", async (req,res) => {
@@ -15,12 +16,14 @@ router.post("/register", async (req,res) => {
         return res.status(401).json("User already exist!");
     }
     else{
+        const salt = await bcrypt.genSalt();
+        const hash = await bcrypt.hash(req.body.password, salt);
         const user = new Receptionist({
 
             employeeID: employeeID,
             username: username,
             mobileNumber: mobileNumber,
-            password: password
+            password: hash
         });
 
         user.save().then(() => {
