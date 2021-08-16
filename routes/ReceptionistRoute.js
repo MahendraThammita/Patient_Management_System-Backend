@@ -55,6 +55,9 @@ router.post("/login", async(req, res) => {
            res.json({status:401, message:'unauthorized'})
         }
     }
+    else{
+        res.json({status:404, message:'user does not exist.'})
+    }
 })
 
 module.exports = router;
