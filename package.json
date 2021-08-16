@@ -2,7 +2,7 @@
   "name": "patient_management_system-backend",
   "version": "1.0.0",
   "description": "TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "start": "nodemon app.js"
   },
@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.12"
   },
@@ -21,6 +22,8 @@
     "config": "^3.3.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-session": "^1.17.2",
+    "keycloak-connect": "^15.0.1",
     "mongoose": "^5.13.7"
   }
 }
