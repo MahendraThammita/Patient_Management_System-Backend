@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Doctor = require('../modals/Doctor');
 const bcrypt = require("bcrypt");
 
-router.post("/register", async (req,res) => {
+router.post("/add", async (req,res) => {
 
     let doctorID = req.body.doctorID;
     let fullName = req.body.fullName;
