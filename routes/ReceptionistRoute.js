@@ -17,7 +17,7 @@ router.post("/register", async (req,res) => {
     }
     else{
         const salt = await bcrypt.genSalt();
-        const hash = await bcrypt.hash(req.body.password, salt);
+        const hash = await bcrypt.hash(password, salt);
         const user = new Receptionist({
 
             employeeID: employeeID,
@@ -33,6 +33,24 @@ router.post("/register", async (req,res) => {
         })
     }
 
+})
+
+router.post("/login", async(req, res) => {
+
+    let employeeID = req.body.employeeID;
+    let password = req.body.password;
+
+    const user = await Receptionist.findOne({'employeeID':employeeID});
+
+    if(user){
+        const auth = await bcrypt.compare(password, user.password);
+        if(auth){
+            res.json({user,status:200});
+        }
+        else{
+            res.json("invalid credentials!");
+        }
+    }
 })
 
 module.exports = router;
