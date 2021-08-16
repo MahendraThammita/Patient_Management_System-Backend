@@ -45,10 +45,10 @@ router.post("/login", async(req, res) => {
     if(user){
         const auth = await bcrypt.compare(password, user.password);
         if(auth){
-            res.json({user,status:200});
+            return res.status(200).json("User found");
         }
         else{
-            res.json("invalid credentials!");
+            return res.status(401).json("invalid credentials!");
         }
     }
 })
