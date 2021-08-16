@@ -30,6 +30,10 @@ const doctorSchema = new Schema({
         type: String,
         required: true
     },
+    timeSlots: {
+        type: Array,
+        required: false
+    },
 })
 const Doctor = mongoose.model("Doctor", doctorSchema);
 module.exports = Doctor;
