@@ -28,7 +28,7 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
     const isExisting = await Doctor.findOne({"doctorID": doctorID});
 
     if (isExisting){
-        return res.status(401).json("Doctor already exist!");
+        res.json({status:400, message:'Doctor already exist'})
     }
     else{
         const salt = await bcrypt.genSalt();
@@ -46,9 +46,9 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
         });
 
         doctor.save().then(() => {
-            return res.status(201).json("Doctor Added ");
+            res.json({status:201, message:'Doctor Added'})
         }).catch((err) => {
-            return res.status(400).json(err);
+            res.json({status:400, message:err})
         })
     }
 
