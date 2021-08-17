@@ -34,6 +34,10 @@ const doctorSchema = new Schema({
         type: Array,
         required: false
     },
+    profileImage: {
+        type: String,
+        required: false
+    },
 })
 const Doctor = mongoose.model("Doctor", doctorSchema);
 module.exports = Doctor;

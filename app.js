@@ -20,6 +20,7 @@ const DoctorRouter = require('./routes/DoctorRoute');
 // app.use(keycloak.middleware());
 app.use(bodyParser.json())
 app.use(cors())
+app.use(express.static('uploads'))
 
 //routes
 app.use('/',Health)

@@ -1,9 +1,20 @@
 const router = require('express').Router();
 const Doctor = require('../modals/Doctor');
-const Schedule = require('../modals/Schedule')
+const Schedule = require('../modals/Schedule');
 const bcrypt = require("bcrypt");
+const multer = require('multer');
 
-router.post("/add", async (req,res) => {
+const storage = multer.diskStorage({
+    destination: './uploads',
+    filename: function (req, file, callback){
+        callback(null, file.originalname);
+    }
+
+});
+
+const upload = multer({storage:storage});
+
+router.post("/add", upload.single('profileImage'), async (req,res) => {
 
     let doctorID = req.body.doctorID;
     let fullName = req.body.fullName;
@@ -12,6 +23,7 @@ router.post("/add", async (req,res) => {
     let username = req.body.username;
     let mobileNumber = req.body.mobileNumber;
     let password = req.body.password;
+    let profileImage =  req.file.originalname
 
     const isExisting = await Doctor.findOne({"doctorID": doctorID});
 
@@ -29,7 +41,8 @@ router.post("/add", async (req,res) => {
             specialty: specialty,
             username: username,
             mobileNumber: mobileNumber,
-            password: hash
+            password: hash,
+            profileImage: profileImage
         });
 
         doctor.save().then(() => {
