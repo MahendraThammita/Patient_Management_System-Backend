@@ -38,6 +38,10 @@ const doctorSchema = new Schema({
         type: String,
         required: false
     },
+    status: {
+        type: String,
+        required: true
+    }
 })
 const Doctor = mongoose.model("Doctor", doctorSchema);
 module.exports = Doctor;
