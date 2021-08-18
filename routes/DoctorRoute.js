@@ -105,6 +105,18 @@ router.route("/:doctorID").get((req,res) => {
         res.json({err});
     })
 
+    router.route("/:doctorID").get((req,res) => {
+
+        const doctorID = req.params.doctorID;
+
+        Doctor.find({_id:doctorID}).then((doctor) => {
+            res.json({doctor});
+        }).catch((err) => {
+            res.json({err});
+        })
+
+    })
+
 })
 
 module.exports = router;
