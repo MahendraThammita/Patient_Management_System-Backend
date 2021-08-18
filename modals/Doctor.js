@@ -2,10 +2,7 @@ const mongoose = require('mongoose');
 const  Schema = mongoose.Schema;
 
 const doctorSchema = new Schema({
-    doctorID: {
-        type: String,
-        required: true
-    },
+
     fullName: {
         type: String,
         required: true
