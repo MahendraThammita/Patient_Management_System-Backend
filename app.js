@@ -3,35 +3,41 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+const router = express.Router({});
+require('dotenv/config');
 dotenv.config();
 const app = express();
-app.use(cors());
-app.use(bodyParser.json);
-
 const PORT = process.env.PORT || 8090;
-const MONGODB_URI = process.env.MONGODB_URI;
 
-mongoose.connect(MONGODB_URI , {
-    useCreateIndex:true,
-    useNewUrlParser:true,
-    useUnifiedTopology: true,
-    useFindAndModify:false
-} , (err) => {
-    if(err){
-        console.log('Database Error : ' , err.message);
+//Import Routes
+const Health = require('./routes/HelathCheck')
+const ReceptionistRouter = require('./routes/ReceptionistRoute');
+const DoctorRouter = require('./routes/DoctorRoute');
+// const TestR = require('./routes/test-controller')
+
+//Middleware
+// const keycloak = require('./config/keycloak-config.js').initKeycloak();
+// app.use(keycloak.middleware());
+app.use(bodyParser.json())
+app.use(cors())
+app.use(express.static('uploads'))
+
+//routes
+app.use('/',Health)
+// app.use('/test',TestR)
+app.use('/receptionist', ReceptionistRouter);
+app.use('/doctor', DoctorRouter);
+
+//connecting to the database
+mongoose.connect(
+    process.env.MONGODB_URI,
+    {useNewUrlParser: true , useUnifiedTopology:true},
+    () =>{
+        console.log("connected to the database")
     }
-})
+)
 
-mongoose.connection.once('open' , () => {
-    console.log('DB Connection Stablished Successfuly.');
-})
-
-
-app.route('/').get((req, res) => {
-    res.send('SLIIT AF FINAL API BY SE2021 BATCH');
-  });
-
-app.listen(PORT , () =>{
-    console.log('Development Server is Up and Running on Port ' , PORT);
-})
+//server start
+app.listen(PORT, () =>{
+    console.log('server is up and running on port :' + PORT);
+});
