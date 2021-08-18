@@ -88,16 +88,35 @@ router.put("/update/:userID", async (req,res) => {
         let newPassword = req.body.newPassword;
 
         const user = await Receptionist.findOne({_id:userID});
-        const isTrue = await bcrypt.compare(oldPassword, user.password);
 
-        if (isTrue) {
-            const salt = await bcrypt.genSalt();
-            const hash = await bcrypt.hash(newPassword, salt);
+        if(oldPassword){
+            const isTrue = await bcrypt.compare(oldPassword, user.password);
+
+            if (isTrue) {
+                const salt = await bcrypt.genSalt();
+                const hash = await bcrypt.hash(newPassword, salt);
+                const updatedValue = {
+
+                    username: username,
+                    mobileNumber: mobileNumber,
+                    password: hash
+                };
+
+                const  updateValue = await  Receptionist.findByIdAndUpdate(userID,updatedValue).then(() => {
+                    res.json({status:200, message:'successfully updated'})
+                }).catch((err) => {
+                    res.json({status:400, error:err})
+                })
+
+            }
+            else {
+                res.json({status:401, message:'Incorrect Password'})
+            }
+        }
+        else{
             const updatedValue = {
-
                 username: username,
                 mobileNumber: mobileNumber,
-                password: hash
             };
 
             const  updateValue = await  Receptionist.findByIdAndUpdate(userID,updatedValue).then(() => {
@@ -106,10 +125,9 @@ router.put("/update/:userID", async (req,res) => {
                 res.json({status:400, error:err})
             })
 
-    }
-        else {
-            res.json({status:401, message:'Incorrect Password'})
         }
+
+
     }
     catch(err){
         console.log(err);
