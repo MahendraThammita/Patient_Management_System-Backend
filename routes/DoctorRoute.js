@@ -45,8 +45,8 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
             status: status
         });
 
-        doctor.save().then(() => {
-            res.json({status:201, message:'Doctor Added'})
+        doctor.save().then((doctor) => {
+            res.json({status:201, doctor:doctor})
         }).catch((err) => {
             res.json({status:400, message:err})
         })
@@ -54,7 +54,7 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
 
 })
 
-router.put("/add-time-slot/:doctorID", async (req,res) => {
+router.post("/add-time-slot/:doctorID", async (req,res) => {
 
     const doctorID = req.params.doctorID;
 
@@ -62,10 +62,9 @@ router.put("/add-time-slot/:doctorID", async (req,res) => {
     let status = req.body.status;
 
     const isExisting = await Doctor.findById(doctorID).find({timeSlots: {$elemMatch: {timeSlot:timeSlot}}});
-    console.log(isExisting);
 
     if (isExisting.length !== 0){
-        return res.status(401).json("Duplicated time slot!");
+        res.json({status:401, message:'duplicated'})
     }
     else{
 
@@ -77,7 +76,7 @@ router.put("/add-time-slot/:doctorID", async (req,res) => {
         });
 
         await Doctor.findOneAndUpdate({'_id':doctorID}, {"$push":{"timeSlots":schedule}}).then(() => {
-            return res.status(201).json("Time Slot Added ");
+            res.json({status:201, message:'success'})
         }).catch((err) => {
             console.log(err);
         })
