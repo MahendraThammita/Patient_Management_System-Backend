@@ -49,7 +49,7 @@ router.post("/login", async(req, res) => {
     if(user){
         const auth = await bcrypt.compare(password, user.password);
         if(auth){
-          res.json({status:200, user:auth})
+          res.json({status:200, user:user})
         }
         else{
            res.json({status:401, message:'unauthorized'})
@@ -58,6 +58,23 @@ router.post("/login", async(req, res) => {
     else{
         res.json({status:404, message:'user does not exist.'})
     }
+})
+
+router.get("/:userID", async(req, res) => {
+
+    let userID = req.params.userID;
+
+    const user = await Receptionist.findOne({_id:userID});
+
+    if(user) {
+
+        res.json({status: 200, user: user});
+    }
+
+    else{
+            res.json({status:404, message:'not found'})
+        }
+
 })
 
 router.put("/update/:userID", async (req,res) => {
