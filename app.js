@@ -27,6 +27,11 @@ mongoose.connection.once('open' , () => {
     console.log('DB Connection Stablished Successfuly.');
 })
 
+
+app.route('/').get((req, res) => {
+    res.send('SLIIT AF FINAL API BY SE2021 BATCH');
+  });
+
 app.listen(PORT , () =>{
     console.log('Development Server is Up and Running on Port ' , PORT);
 })
