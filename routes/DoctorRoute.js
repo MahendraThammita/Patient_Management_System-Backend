@@ -23,7 +23,8 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
     let username = req.body.username;
     let mobileNumber = req.body.mobileNumber;
     let password = req.body.password;
-    let profileImage =  req.file.originalname
+    let profileImage =  req.file.originalname;
+    let status = req.body.status;
 
     const isExisting = await Doctor.findOne({"doctorID": doctorID});
 
@@ -42,7 +43,8 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
             username: username,
             mobileNumber: mobileNumber,
             password: hash,
-            profileImage: profileImage
+            profileImage: profileImage,
+            status: status
         });
 
         doctor.save().then(() => {
@@ -83,6 +85,16 @@ router.put("/add-time-slot/:doctorID", async (req,res) => {
         })
 
     }
+
+})
+
+router.route("/").get((req,res) => {
+
+    Doctor.find().then((doctors) => {
+        res.json({doctors});
+    }).catch((err) => {
+        res.json({err});
+    })
 
 })
 
