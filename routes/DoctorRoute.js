@@ -16,7 +16,6 @@ const upload = multer({storage:storage});
 
 router.post("/add", upload.single('profileImage'), async (req,res) => {
 
-    let doctorID = req.body.doctorID;
     let fullName = req.body.fullName;
     let email = req.body.email;
     let specialty = req.body.specialty;
@@ -26,7 +25,7 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
     let profileImage =  req.file.originalname;
     let status = req.body.status;
 
-    const isExisting = await Doctor.findOne({"doctorID": doctorID});
+    const isExisting = await Doctor.findOne({"fullName": fullName});
 
     if (isExisting){
         res.json({status:400, message:'Doctor already exist'})
@@ -36,7 +35,6 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
         const hash = await bcrypt.hash(password, salt);
         const doctor = new Doctor({
 
-            doctorID: doctorID,
             fullName: fullName,
             email: email,
             specialty: specialty,
