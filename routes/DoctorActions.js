@@ -1,20 +1,18 @@
 var express = require('express');
 var router = express.Router();
-const keycloak = require('../config/keycloak-config').getKeycloak()
+const authorize = require('../config/auth')
 const axios = require('axios')
 const qs = require('qs');
 const { json } = require('body-parser');
+const Doctor = require('../modals/Doctor');
 
-router.route('/pending/').get(authorize, (req, res, next) => {
-    userSchema.findById(req.params.id, (error, data) => {
-        if (error) {
-            return next(error);
-        } else {
-            res.status(200).json({
-                msg: data
-            })
-        }
-    })
+
+//get all doctor usernames from the datbase
+
+router.route('/get-my-name').get(async(req, res, next) => {
+    const data = await Doctor.find();
+    //send the data to the user
+    res.send(data) 
 })
 
 module.exports = router;
