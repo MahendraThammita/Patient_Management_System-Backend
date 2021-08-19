@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Doctor = require('../modals/Doctor');
 const Schedule = require('../modals/Schedule');
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const multer = require('multer');
 
@@ -158,5 +159,44 @@ router.put("/update/:userID", upload.single('profileImage'), async (req,res) => 
     }
 
 })
+
+
+// Sign-in
+router.post("/signin", (req, res, next) => {
+    let getUser;
+    Doctor.findOne({
+        email: req.body.email
+    }).then(user => {
+        if (!user) {
+            return res.status(401).json({
+                message: "Authentication failed"
+            });
+        }
+        getUser = user;
+        return bcrypt.compare(req.body.password, user.password);
+    }).then(response => {
+        if (!response) {
+            return res.status(401).json({
+                message: "Authentication failed"
+            });
+        }
+        let jwtToken = jwt.sign({
+            email: getUser.email,
+            userId: getUser._id
+        }, "X7ZUG_hmbC58ZCUCko1usvKMVCVwNKMC-XCcNX_zXh3EwYFSz6dxCAOJ3w885nqmrZNVujk-TqyNXOCu1MXg1v8y28hil_sQTLxKOtNq-w3qS1yTcFuXVSoiJEpYrACAevY98rI53NTp3ki-uWjUVayGNi16_pRpWwfzMhYHUyp-AX9NnbFSwwelYgZmjzoxqXe0bjgDZBLVUiU9-Vge8NO4tXJaZwrWQ5N9zIjAbyieuh4lXHUB1_UdMY9E5BN6Cxpu9rBBNOHK6We2BmEcQHfs7uK7FB0jl7R8xWrGwRchHuGIqwagHPXTKYYuAMNRXfb2TgR1rY8i5ofX0_RlwQ", {
+            expiresIn: "1h"
+        });
+        res.status(200).json({
+            token: jwtToken,
+            expiresIn: 3600,
+            msg: getUser
+        });
+    }).catch(err => {
+        return res.status(401).json({
+            message: "Authentication failed"
+        });
+    });
+});
+
 
 module.exports = router;

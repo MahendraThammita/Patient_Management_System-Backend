@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 8090;
 //Import Routes
 const Health = require('./routes/HelathCheck')
 const TestR = require('./routes/test-controller')
-const Logins = require('./routes/LoginRoutes')
+const DoctorActions = require('./routes/DoctorActions')
 const ReceptionistRouter = require('./routes/ReceptionistRoute');
 const DoctorRouter = require('./routes/DoctorRoute');
 // const TestR = require('./routes/test-controller')
@@ -31,9 +31,8 @@ app.use(bodyParser.json())
 //routes
 app.use('/',Health)
 app.use('/test',TestR)
-app.use('/auth',Logins)
 app.use(express.static('uploads'))
-// app.use('/test',TestR)
+app.use('/doctorA',DoctorActions)
 app.use('/receptionist', ReceptionistRouter);
 app.use('/doctor', DoctorRouter);
 
