@@ -117,7 +117,6 @@ router.put("/update/:userID", upload.single('profileImage'), async (req,res) => 
         let specialty = req.body.specialty;
         let username = req.body.username;
         let mobileNumber = req.body.mobileNumber;
-        let profileImage =  req.file.originalname;
         let status = req.body.status;
         let updatedValue;
 
@@ -136,6 +135,7 @@ router.put("/update/:userID", upload.single('profileImage'), async (req,res) => 
         }
 
         else{
+            let profileImage =  req.file.originalname;
             updatedValue = {
                 fullName: fullName,
                 email: email,
