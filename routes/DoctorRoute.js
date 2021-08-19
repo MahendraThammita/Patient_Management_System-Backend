@@ -105,17 +105,57 @@ router.route("/:doctorID").get((req,res) => {
         res.json({err});
     })
 
-    router.route("/:doctorID").get((req,res) => {
+})
 
-        const doctorID = req.params.doctorID;
+router.put("/update/:userID", upload.single('profileImage'), async (req,res) => {
 
-        Doctor.find({_id:doctorID}).then((doctor) => {
-            res.json({doctor});
-        }).catch((err) => {
-            res.json({err});
-        })
+    try{
 
-    })
+        let userID = req.params.userID;
+        let fullName = req.body.fullName;
+        let email = req.body.email;
+        let specialty = req.body.specialty;
+        let username = req.body.username;
+        let mobileNumber = req.body.mobileNumber;
+        let profileImage =  req.file.originalname;
+        let status = req.body.status;
+        let updatedValue;
+
+
+        const isExisting = await Doctor.findOne({_id: userID});
+
+        if(!req.file) {
+            updatedValue = {
+                fullName: fullName,
+                email: email,
+                specialty: specialty,
+                username: username,
+                mobileNumber: mobileNumber,
+                status: status
+            };
+        }
+
+        else{
+            updatedValue = {
+                fullName: fullName,
+                email: email,
+                specialty: specialty,
+                username: username,
+                mobileNumber: mobileNumber,
+                profileImage: profileImage,
+                status: status
+            };
+        }
+
+            const  updateValue = await Doctor.findByIdAndUpdate(userID,updatedValue).then(() => {
+                res.json({status:200, message:'successfully updated'})
+            }).catch((err) => {
+                res.json({status:400, error:err})
+            })
+    }
+    catch(err){
+        console.log(err);
+    }
 
 })
 
