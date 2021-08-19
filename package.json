@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.12"
   },
@@ -25,6 +26,7 @@
     "express-session": "^1.17.2",
     "keycloak-connect": "^6.0.1",
     "mongoose": "^5.13.7",
-    "qs": "^6.10.1"
+    "qs": "^6.10.1",
+    "multer": "^1.4.3"
   }
 }

@@ -1,9 +1,11 @@
-const express = require('express')
-const app = express()
-const mongoose = require('mongoose')
-const bodyParser = require('body-parser')
-const cors = require('cors')
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const router = express.Router({});
+const app = express();
+
 require('dotenv/config')
 const session = require('express-session')
 var memoryStore = new session.MemoryStore();
@@ -16,6 +18,9 @@ const PORT = process.env.PORT || 8090;
 const Health = require('./routes/HelathCheck')
 const TestR = require('./routes/test-controller')
 const Logins = require('./routes/LoginRoutes')
+const ReceptionistRouter = require('./routes/ReceptionistRoute');
+const DoctorRouter = require('./routes/DoctorRoute');
+// const TestR = require('./routes/test-controller')
 
 //Middleware
 app.use(cors())
@@ -27,6 +32,10 @@ app.use(bodyParser.json())
 app.use('/',Health)
 app.use('/test',TestR)
 app.use('/auth',Logins)
+app.use(express.static('uploads'))
+// app.use('/test',TestR)
+app.use('/receptionist', ReceptionistRouter);
+app.use('/doctor', DoctorRouter);
 
 //connecting to the database
 mongoose.connect(
@@ -39,5 +48,5 @@ mongoose.connect(
 
 //server start
 app.listen(PORT, () =>{
-    console.log('server is up and runnig on port :' + PORT);
+    console.log('server is up and running on port :' + PORT);
 });
