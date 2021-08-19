@@ -5,7 +5,7 @@ const axios = require('axios')
 const qs = require('qs');
 const { json } = require('body-parser');
 
-router.route('/user-profile/:id').get(authorize, (req, res, next) => {
+router.route('/pending/').get(authorize, (req, res, next) => {
     userSchema.findById(req.params.id, (error, data) => {
         if (error) {
             return next(error);
