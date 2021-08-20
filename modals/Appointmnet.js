@@ -3,10 +3,6 @@ const  Schema = mongoose.Schema;
 
 const appointmentSchema = new Schema({
 
-    fullName: {
-        type: String,
-        required: true
-    },
     approvedStatus: {
         type: Boolean,
         required: true
