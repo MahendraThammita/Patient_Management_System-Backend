@@ -15,11 +15,19 @@ const patientSchema = new Schema({
         type: Number,
         required: true
     },
-    Proffesion: {
+    dateOfBirth: {
+        type: Date,
+        required: true
+    },
+    profession: {
+        type: String,
+        required: false
+    },
+    address: {
         type: String,
         required: true
     },
-    address: {
+    phone: {
         type: String,
         required: true
     },
@@ -33,16 +41,20 @@ const patientSchema = new Schema({
     },
     guardianName: {
         type: String,
-        required: false
+        required: true
     },
     guardianPhone: {
         type: String,
-        required: false
+        required: true
     },
     guardianEmail: {
         type: String,
         required: true
-    }
+    },
+    medications: {
+        type: Array,
+        required: false
+    },
 })
-const Patient = mongoose.model("Patient", patientSchema);
+const Patient = mongoose.model("patient", patientSchema);
 module.exports = Patient;

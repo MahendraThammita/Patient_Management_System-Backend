@@ -20,6 +20,7 @@ const TestR = require('./routes/test-controller')
 const DoctorActions = require('./routes/DoctorActions')
 const ReceptionistRouter = require('./routes/ReceptionistRoute');
 const DoctorRouter = require('./routes/DoctorRoute');
+const PatientRoute = require('./routes/PatientRoutes');
 // const TestR = require('./routes/test-controller')
 
 //Middleware
@@ -35,6 +36,7 @@ app.use(express.static('uploads'))
 app.use('/doctorA',DoctorActions)
 app.use('/receptionist', ReceptionistRouter);
 app.use('/doctor', DoctorRouter);
+app.use('/patient', PatientRoute);
 
 //connecting to the database
 mongoose.connect(
