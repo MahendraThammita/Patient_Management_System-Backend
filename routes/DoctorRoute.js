@@ -199,6 +199,17 @@ router.post("/signin", (req, res, next) => {
 });
 
 
+router.route("/:doctorID").delete((req,res) => {
+
+    const doctorID = req.params.doctorID;
+
+    Doctor.findByIdAndDelete(doctorID).then(() => {
+        res.json({status:200, message:'successfully deleted'})
+    }).catch((err) => {
+        res.json({err});
+    })
+
+})
 
 
 module.exports = router;
