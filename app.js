@@ -22,6 +22,7 @@ const ReceptionistRouter = require('./routes/ReceptionistRoute');
 const DoctorRouter = require('./routes/DoctorRoute');
 const PatientRoute = require('./routes/PatientRoutes');
 const AppointmentRoute = require('./routes/AppointmentsRoutes');
+const Uploads = require('./routes/Uploads');
 // const TestR = require('./routes/test-controller')
 
 //Middleware
@@ -38,7 +39,8 @@ app.use('/doctorA',DoctorActions)
 app.use('/receptionist', ReceptionistRouter);
 app.use('/doctor', DoctorRouter);
 app.use('/patient', PatientRoute);
-app.use('./appointment', AppointmentRoute);
+app.use('/appointment', AppointmentRoute);
+app.use('/upload', Uploads);
 
 //connecting to the database
 mongoose.connect(
