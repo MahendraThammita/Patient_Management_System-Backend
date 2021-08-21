@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const Patient = require('../modals/Patient');
 
 // Log-in
-router.post("/signin", (req, res, next) => {
+router.post("/login", (req, res, next) => {
     let getUser;
     Patient.findOne({
         email: req.body.email
@@ -31,6 +31,7 @@ router.post("/signin", (req, res, next) => {
             expiresIn: "1h"
         });
         res.status(200).json({
+            id:getUser._id,
             token: jwtToken,
             expiresIn: 3600,
             msg: getUser

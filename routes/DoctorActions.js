@@ -17,6 +17,18 @@ router.route('/get-my-name').get(async(req, res, next) => {
     res.send(data) 
 })
 
+//get timeslots for a doctor
+router.route('/get-timeslots/:id').get(async(req, res) => {
+    if (req.params && req.params.id) {
+        await Doctor.findById(req.params.id)
+        .then(data => {
+          res.status(200).send({ timeSlots: data.timeSlots });
+        })
+        .catch(error => {
+          res.status(500).send({ error: error.message });
+        });
+      }
+
 //get all pending appointments
 router.route('/pending/:id').get(authorize,async(req,res)=>{
 
