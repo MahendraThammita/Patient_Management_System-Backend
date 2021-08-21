@@ -5,7 +5,7 @@ const axios = require('axios')
 const qs = require('qs');
 const { json } = require('body-parser');
 const Doctor = require('../modals/Doctor');
-const Appointment = require('../modals/Appointmnet');
+const Appointment = require('../modals/Appointment');
 const Patient = require('../modals/Patient');
 
 
@@ -27,7 +27,9 @@ router.route('/get-timeslots/:id').get(async(req, res) => {
         .catch(error => {
           res.status(500).send({ error: error.message });
         });
-      }
+    }
+
+})
 
 //get all pending appointments
 router.route('/pending/:id').get(authorize,async(req,res)=>{
