@@ -17,11 +17,52 @@ router.route('/get-my-name').get(async(req, res, next) => {
     res.send(data) 
 })
 
+//get timeslots for a doctor
+router.route('/get-timeslots/:id').get(async(req, res) => {
+    if (req.params && req.params.id) {
+        await Doctor.findById(req.params.id)
+        .then(data => {
+          res.status(200).send({ timeSlots: data.timeSlots });
+        })
+        .catch(error => {
+          res.status(500).send({ error: error.message });
+        });
+      }
+      
+
 //get all pending appointments
 router.route('/pending/:id').get(authorize,async(req,res)=>{
 
     try {
         const pendingApps = await Appointment.find({status : 'pending',approvedStatus : true, doctor : req.params.id}).populate('patient')
+
+        res.send(pendingApps)
+    } catch (error) {
+        res.send(error)
+    }
+
+})
+
+
+//get all declined appointments
+router.route('/declined/:id').get(authorize,async(req,res)=>{
+
+    try {
+        const pendingApps = await Appointment.find({status : 'declined',approvedStatus : true, doctor : req.params.id}).populate('patient')
+
+        res.send(pendingApps)
+    } catch (error) {
+        res.send(error)
+    }
+
+})
+
+
+//get all finised appointments
+router.route('/finished/:id').get(authorize,async(req,res)=>{
+
+    try {
+        const pendingApps = await Appointment.find({status : 'finished',approvedStatus : true, doctor : req.params.id}).populate('patient')
 
         res.send(pendingApps)
     } catch (error) {
@@ -65,6 +106,34 @@ router.route('/report/:aid').post(authorize,async(req,res)=>{
     }
 })
 
+//change the status of the appointment
+router.route('/status/:aid').post(authorize,async(req,res)=>{
+    try {
+        //console.log(req.body.newMed);
+        const resp = await Appointment.updateOne({_id : req.params.aid},{$set : {status : req.body.status}})
+        res.send(resp)
+    } catch (error) {
+        res.send(error)
+    }
+})
 
+
+
+//get appoinyment numbers
+router.route('/count/:id').get(authorize,async(req,res)=>{
+
+    try {
+        const pendingApps = await Appointment.find({status : 'pending',approvedStatus : true, doctor : req.params.id}).count()
+
+        const declinedApps = await Appointment.find({status : 'declined',approvedStatus : true, doctor : req.params.id}).count()
+
+        const finishedApps = await Appointment.find({status : 'finished',approvedStatus : true, doctor : req.params.id}).count()
+
+        res.json({"pen" : pendingApps, "fin" : finishedApps, "dec" : declinedApps})
+    } catch (error) {
+        res.send(error)
+    }
+
+})
 
 module.exports = router;

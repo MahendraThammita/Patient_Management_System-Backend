@@ -184,7 +184,7 @@ router.post("/signin", (req, res, next) => {
             email: getUser.email,
             userId: getUser._id
         }, "X7ZUG_hmbC58ZCUCko1usvKMVCVwNKMC-XCcNX_zXh3EwYFSz6dxCAOJ3w885nqmrZNVujk-TqyNXOCu1MXg1v8y28hil_sQTLxKOtNq-w3qS1yTcFuXVSoiJEpYrACAevY98rI53NTp3ki-uWjUVayGNi16_pRpWwfzMhYHUyp-AX9NnbFSwwelYgZmjzoxqXe0bjgDZBLVUiU9-Vge8NO4tXJaZwrWQ5N9zIjAbyieuh4lXHUB1_UdMY9E5BN6Cxpu9rBBNOHK6We2BmEcQHfs7uK7FB0jl7R8xWrGwRchHuGIqwagHPXTKYYuAMNRXfb2TgR1rY8i5ofX0_RlwQ", {
-            expiresIn: "1h"
+            expiresIn: 3600
         });
         res.status(200).json({
             token: jwtToken,
@@ -210,6 +210,8 @@ router.route("/:doctorID").delete((req,res) => {
     })
 
 })
+
+
 
 
 module.exports = router;
