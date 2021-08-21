@@ -23,7 +23,15 @@ const patientSchema = new Schema({
         type: String,
         required: false
     },
-    address: {
+    addressLine1: {
+        type: String,
+        required: true
+    },
+    addressLine2: {
+        type: String,
+        required: true
+    },
+    city: {
         type: String,
         required: true
     },
