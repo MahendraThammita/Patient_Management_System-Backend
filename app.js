@@ -38,7 +38,7 @@ app.use('/doctorA',DoctorActions)
 app.use('/receptionist', ReceptionistRouter);
 app.use('/doctor', DoctorRouter);
 app.use('/patient', PatientRoute);
-app.use('./appointment', AppointmentRoute);
+app.use('/appointment', AppointmentRoute);
 
 //connecting to the database
 mongoose.connect(

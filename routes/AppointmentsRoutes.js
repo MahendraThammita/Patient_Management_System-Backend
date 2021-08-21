@@ -1,12 +1,10 @@
 const router = require('express').Router();
-const Appointment = require('../modals/Appointmnet');
+const Appointment = require('../modals/Appointment');
 
 
 //create appointment
 router.post('/create',async (req,res) =>{
     const {
-        approvedStatus = 'false',
-        status,
         patientMessage,
         appointmentDate,
         appointmentTimeSlot,
@@ -17,8 +15,8 @@ router.post('/create',async (req,res) =>{
     try{
         const data = await Appointment.create({
             
-            approvedStatus:approvedStatus,
-            status:status,
+            approvedStatus: false,
+            status:"pending",
             patientMessage:patientMessage,
             appointmentDate:appointmentDate,
             appointmentTimeSlot:appointmentTimeSlot,
