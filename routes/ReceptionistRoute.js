@@ -1,6 +1,20 @@
 const router = require('express').Router();
 const Receptionist = require('../modals/Receptionist');
+const jwt = require("jsonwebtoken");
+require('dotenv').config();
 const bcrypt = require("bcrypt");
+
+
+function auth(req,res,next){
+    const authToken = req.header('auth_token');
+    if (!authToken) return  res.json({status: 401, message: 'unauthorized'})
+        try {
+            req.user = jwt.verify(authToken, process.env.ACCESS_TOKEN_SECRET_KEY);
+            next();
+        } catch (e) {
+            res.json({status: 401, message: 'unauthorized'})
+        }
+}
 
 
 router.post("/register", async (req,res) => {
@@ -40,27 +54,31 @@ router.post("/register", async (req,res) => {
 })
 
 router.post("/login", async(req, res) => {
+    try {
+        let employeeID = req.body.employeeID;
+        let password = req.body.password;
 
-    let employeeID = req.body.employeeID;
-    let password = req.body.password;
+        const user = await Receptionist.findOne({'employeeID': employeeID});
 
-    const user = await Receptionist.findOne({'employeeID':employeeID});
-
-    if(user){
-        const auth = await bcrypt.compare(password, user.password);
-        if(auth){
-          res.json({status:200, user:user})
+        if (user) {
+            const auth = await bcrypt.compare(password, user.password);
+            if (auth) {
+                const accessToken = jwt.sign({user}, process.env.ACCESS_TOKEN_SECRET_KEY);
+                // res.header('auth_token',accessToken).send(accessToken);
+                res.json({status: 200, token: accessToken, user: user});
+            } else {
+                res.json({status: 401, message: 'unauthorized'})
+            }
+        } else {
+            res.json({status: 404, message: 'user does not exist.'})
         }
-        else{
-           res.json({status:401, message:'unauthorized'})
-        }
+    }catch (err) {
+        res.json({error: err})
     }
-    else{
-        res.json({status:404, message:'user does not exist.'})
-    }
+
 })
 
-router.get("/:userID", async(req, res) => {
+router.get("/:userID", auth, async(req, res) => {
 
     let userID = req.params.userID;
 
@@ -77,7 +95,7 @@ router.get("/:userID", async(req, res) => {
 
 })
 
-router.put("/update/:userID", async (req,res) => {
+router.put("/update/:userID",auth, async (req,res) => {
 
     try{
 
