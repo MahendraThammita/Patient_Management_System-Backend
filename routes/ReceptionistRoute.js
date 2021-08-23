@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Receptionist = require('../modals/Receptionist');
+const Appointment = require('../modals/Appointment');
 const jwt = require("jsonwebtoken");
 require('dotenv').config();
 const bcrypt = require("bcrypt");
@@ -150,6 +151,16 @@ router.put("/update/:userID",auth, async (req,res) => {
     catch(err){
         console.log(err);
     }
+
+})
+
+router.get("/appointments/pending", async(req, res) => {
+
+    const appointments = await Appointment.find({'approvedStatus': true}).then((appointments) => {
+        res.json({appointments:appointments});
+    }).catch((err) => {
+        res.json({err:err});
+    })
 
 })
 
