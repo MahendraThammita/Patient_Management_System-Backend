@@ -211,6 +211,17 @@ router.route("/:doctorID").delete((req,res) => {
 
 })
 
+router.route("/search/:key").get((req,res) => {
+
+    const key = req.params.key;
+
+    Doctor.find({'fullName':new RegExp(key,'i')}).then((doctor) => {
+        res.json({doctor});
+    }).catch((err) => {
+        res.json({err});
+    })
+
+})
 
 
 
