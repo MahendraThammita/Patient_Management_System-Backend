@@ -164,4 +164,15 @@ router.get("/appointments/pending", async(req, res) => {
 
 })
 
+router.get("/appointments/view/:ID", async(req, res) => {
+
+    let ID = req.params.ID;
+    const appointments = await Appointment.find({_id: ID}).then((appointment) => {
+        res.json({appointment});
+    }).catch((err) => {
+        res.json({err:err});
+    })
+
+})
+
 module.exports = router;
