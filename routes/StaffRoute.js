@@ -5,11 +5,14 @@ const bcrypt = require("bcrypt");
 const multer = require('multer');
 const Nurse = require('../modals/Nurse');
 const LabStaff = require('../modals/LabStaff');
+const { v4: uuidv4 } = require('uuid');
 
 const storage = multer.diskStorage({
     destination: './uploads/staff',
     filename: function (req, file, callback){
-        callback(null, file.originalname);
+        const imageID = uuidv4();
+        const uploadName = imageID+file.originalname;
+        callback(null,  uploadName);
     }
 
 });
@@ -26,7 +29,7 @@ router.post("/register", upload.single('profileImage'), async (req,res) => {
     let email = req.body.email;
     let mobileNumber = req.body.mobileNumber;
     let password = req.body.password;
-    let profileImage =  req.file.originalname;
+    let profileImage =  req.file.filename;
     let role = req.body.role;
 
     if (role === 'nurse' ){
@@ -57,7 +60,7 @@ router.post("/register", upload.single('profileImage'), async (req,res) => {
         }
     }
     else if (role === 'labStaff'){
-        const isExisting = await LabStaff.findOne({'NIC': NIC});
+        const isExisting = await LabStaff.findOne({'nic': NIC});
         if (isExisting){
             res.json({status:400, message:'User already exist'})
         }
@@ -88,10 +91,10 @@ router.post("/register", upload.single('profileImage'), async (req,res) => {
 
 router.post("/login", async(req, res) => {
     try {
-        let nic = req.body.nic;
+        let NIC = req.body.nic;
         let password = req.body.password;
 
-        const user = await Receptionist.findOne({'employeeID': employeeID});
+        const user = await Nurse.findOne({'nic': NIC});
 
         if (user) {
             const auth = await bcrypt.compare(password, user.password);
