@@ -124,7 +124,6 @@ router.put("/update/:userID", upload.single('profileImage'), async (req,res) => 
         let status = req.body.status;
         let updatedValue;
 
-
         const isExisting = await Doctor.findOne({_id: userID});
 
         if(!req.file) {
@@ -139,7 +138,7 @@ router.put("/update/:userID", upload.single('profileImage'), async (req,res) => 
         }
 
         else{
-            let profileImage =  req.file.originalname;
+            let profileImage = req.file.filename;
             updatedValue = {
                 fullName: fullName,
                 email: email,
