@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage:storage});
 
 
-router.post("/register", upload.single('profileImage'), async (req,res) => {
+router.post("/register", async (req,res) => {
 
 
     let Fname = req.body.firstName;
@@ -29,10 +29,10 @@ router.post("/register", upload.single('profileImage'), async (req,res) => {
     let email = req.body.email;
     let mobileNumber = req.body.mobileNumber;
     let password = req.body.password;
-    let profileImage =  req.file.filename;
+    // let profileImage =  req.file.filename;
     let role = req.body.role;
 
-    if (role === 'nurse' ){
+    if (role === 'Nurse' ){
         const isExisting = await Nurse.findOne({'nic': NIC});
         if (isExisting){
             res.json({status:400, message:'User already exist'})
@@ -48,7 +48,7 @@ router.post("/register", upload.single('profileImage'), async (req,res) => {
                 email: email,
                 mobileNumber: mobileNumber,
                 password: hash,
-                profileImage: profileImage,
+                // profileImage: profileImage,
 
             });
 
@@ -75,7 +75,7 @@ router.post("/register", upload.single('profileImage'), async (req,res) => {
                 email: email,
                 mobileNumber: mobileNumber,
                 password: hash,
-                profileImage: profileImage,
+                // profileImage: profileImage,
 
             });
 
@@ -91,7 +91,7 @@ router.post("/register", upload.single('profileImage'), async (req,res) => {
 
 router.post("/login", async(req, res) => {
     try {
-        let NIC = req.body.nic;
+        let NIC = req.body.NIC;
         let password = req.body.password;
 
         const user = await Nurse.findOne({'nic': NIC});
