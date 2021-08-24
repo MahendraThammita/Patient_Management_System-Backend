@@ -4,29 +4,43 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const router = express.Router({});
-require('dotenv/config');
-dotenv.config();
 const app = express();
+
+require('dotenv/config')
+const session = require('express-session')
+var memoryStore = new session.MemoryStore();
+app.use(session({ secret: '63fd9f4d-a693-40cb-acf1-2ff729047d58', resave: false, saveUninitialized: true, store: memoryStore }))
+const keycloak = require('./config/keycloak-config.js').initKeycloak(memoryStore);
+
 const PORT = process.env.PORT || 8090;
 
 //Import Routes
 const Health = require('./routes/HelathCheck')
+const TestR = require('./routes/test-controller')
+const DoctorActions = require('./routes/DoctorActions')
 const ReceptionistRouter = require('./routes/ReceptionistRoute');
 const DoctorRouter = require('./routes/DoctorRoute');
+const PatientRoute = require('./routes/PatientRoutes');
+const AppointmentRoute = require('./routes/AppointmentsRoutes');
+const Uploads = require('./routes/Uploads');
 // const TestR = require('./routes/test-controller')
 
 //Middleware
-// const keycloak = require('./config/keycloak-config.js').initKeycloak();
-// app.use(keycloak.middleware());
-app.use(bodyParser.json())
 app.use(cors())
-app.use(express.static('uploads'))
+app.use(keycloak.middleware());
+app.use(bodyParser.json())
+
 
 //routes
 app.use('/',Health)
-// app.use('/test',TestR)
+app.use('/test',TestR)
+app.use(express.static('uploads'))
+app.use('/doctorA',DoctorActions)
 app.use('/receptionist', ReceptionistRouter);
 app.use('/doctor', DoctorRouter);
+app.use('/patient', PatientRoute);
+app.use('/appointment', AppointmentRoute);
+app.use('/upload', Uploads);
 
 //connecting to the database
 mongoose.connect(

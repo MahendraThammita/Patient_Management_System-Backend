@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
 const  Schema = mongoose.Schema;
 
-const doctorSchema = new Schema({
+const labStaffSchema = new Schema({
 
-    fullName: {
+    Fname: {
+        type: String,
+        required: true
+    },
+    Lname: {
         type: String,
         required: true
     },
@@ -15,30 +19,20 @@ const doctorSchema = new Schema({
         type: Number,
         required: true
     },
-    specialty: {
-        type: String,
-        required: true
-    },
-    username: {
-        type: String,
-        required: true
-    },
     password: {
         type: String,
         required: true
-    },
-    timeSlots: {
-        type: Array,
-        required: false
     },
     profileImage: {
         type: String,
         required: false
     },
-    status: {
-        type: String,
-        required: true
-    }
+    tests:[{
+        type: mongoose.Schema.Types.ObjectId, 
+        required: false,
+        ref: 'Appointment'
+
+    }]
 })
-const Doctor = mongoose.model("Doctor", doctorSchema);
-module.exports = Doctor;
+const LabStaff = mongoose.model("LabStaff", labStaffSchema);
+module.exports = LabStaff;
