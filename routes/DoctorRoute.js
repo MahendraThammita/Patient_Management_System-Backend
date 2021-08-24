@@ -27,7 +27,6 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
     let mobileNumber = req.body.mobileNumber;
     let password = req.body.password;
     let profileImage =  req.file.filename;
-    let profileImage =  req.file.originalname;
     let status = req.body.status;
 
     const isExisting = await Doctor.findOne({"fullName": fullName});
