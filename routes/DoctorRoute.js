@@ -4,11 +4,14 @@ const Schedule = require('../modals/Schedule');
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
 
 const storage = multer.diskStorage({
-    destination: './uploads',
+    destination: './uploads/doctor',
     filename: function (req, file, callback){
-        callback(null, file.originalname);
+        const imageID = uuidv4();
+        const uploadName = imageID+file.originalname;
+        callback(null, uploadName);
     }
 
 });
@@ -23,7 +26,7 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
     let username = req.body.username;
     let mobileNumber = req.body.mobileNumber;
     let password = req.body.password;
-    let profileImage =  req.file.originalname;
+    let profileImage =  req.file.filename;
     let status = req.body.status;
 
     const isExisting = await Doctor.findOne({"fullName": fullName});
