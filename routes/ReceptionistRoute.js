@@ -17,7 +17,7 @@ router.post("/register", async (req,res) => {
     }
     else{
         const salt = await bcrypt.genSalt();
-        const hash = await bcrypt.hash(req.body.password, salt);
+        const hash = await bcrypt.hash(password, salt);
         const user = new Receptionist({
 
             employeeID: employeeID,
