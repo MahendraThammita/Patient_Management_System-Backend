@@ -4,19 +4,7 @@ const Appointment = require('../modals/Appointment');
 const jwt = require("jsonwebtoken");
 require('dotenv').config();
 const bcrypt = require("bcrypt");
-
-
-function auth(req,res,next){
-    const authToken = req.header('auth_token');
-    if (!authToken) return  res.json({status: 401, message: 'unauthorized'})
-        try {
-            req.user = jwt.verify(authToken, process.env.ACCESS_TOKEN_SECRET_KEY);
-            next();
-        } catch (e) {
-            res.json({status: 401, message: 'unauthorized'})
-        }
-}
-
+const validator = require("../Auth/validator");
 
 router.post("/register", async (req,res) => {
 
@@ -79,7 +67,7 @@ router.post("/login", async(req, res) => {
 
 })
 
-router.get("/:userID", auth, async(req, res) => {
+router.get("/:userID", validator, async(req, res) => {
 
     let userID = req.params.userID;
 
@@ -96,7 +84,7 @@ router.get("/:userID", auth, async(req, res) => {
 
 })
 
-router.put("/update/:userID",auth, async (req,res) => {
+router.put("/update/:userID",validator, async (req,res) => {
 
     try{
 
