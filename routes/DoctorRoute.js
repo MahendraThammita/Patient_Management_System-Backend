@@ -30,7 +30,7 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
     let profileImage =  req.file.filename;
     let status = req.body.status;
 
-    const isExisting = await Doctor.findOne({"fullName": fullName});
+    const isExisting = await Doctor.findOne({"NIC": nic});
 
     if (isExisting){
         res.json({status:400, message:'Doctor already exist'})
