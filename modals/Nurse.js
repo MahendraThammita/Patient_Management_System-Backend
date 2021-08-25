@@ -15,6 +15,10 @@ const nurseSchema = new Schema({
         type: String,
         required: true
     },
+    NIC: {
+        type: String,
+        required: true
+    },
     mobileNumber: {
         type: Number,
         required: true
