@@ -14,6 +14,10 @@ const recepSchema = new Schema({
         type: Number,
         required: true
     },
+    profileImage: {
+        type: String,
+        required: false
+    },
     password: {
         type: String,
         required: true

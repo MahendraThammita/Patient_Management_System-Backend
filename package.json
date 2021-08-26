@@ -15,7 +15,8 @@
   "devDependencies": {
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.12",
+    "uuid": "^8.3.2"
   },
   "dependencies": {
     "aws-sdk": "^2.973.0",
@@ -30,6 +31,7 @@
     "mongoose": "^5.13.7",
     "mongoose-unique-validator": "^2.0.3",
     "multer": "^1.4.3",
-    "qs": "^6.10.1"
+    "qs": "^6.10.1",
+    "uuid": "^8.3.2"
   }
 }
