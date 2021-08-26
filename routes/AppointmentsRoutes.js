@@ -45,14 +45,31 @@ router.post('/create',async (req,res) =>{
 
  //get appointments for a patient
 router.route('/get/:id').get(async(req, res) => {
-
-    const data = await Appointment.find({ patient: req.params.id}).populate('doctor')
-    .then(data => {
-        res.status(200).send(data);
+    
+     try {
+        var test = []
+        await Appointment.find({ patient: req.params.id}).populate('doctor')
+        .then(data => {
+            
+            data.map(item => {
+                var apnt = {
+                    "appointmentId" : item._id,
+                    "appointmentDate" : item.appointmentDate,
+                    "appointmentTimeSlot" : item.appointmentTimeSlot,
+                    "doctor" : item.doctor.fullName,
+                    "appointmentStatus" : [String(item.approvedStatus)]
+                }
+                // console.log(item)
+            test.push(apnt)
+        })
     })
-    .catch(error => {
-        res.status(500).send({ error: error.message });
-    });
+
+    res.json(test)
+         
+     } catch (error) {
+        console.log(error)
+        res.json({error: error})
+     }
 })
 
 
