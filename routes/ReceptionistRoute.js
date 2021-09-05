@@ -181,7 +181,7 @@ router.put("/update/:userID", async (req,res) => {
 
 router.get("/appointments/pending", async(req, res) => {
 
-    const appointments = await Appointment.find({'approvedStatus': true}).then((appointments) => {
+    const appointments = await Appointment.find({'approvedStatus': true}).populate('patient').populate('doctor').then((appointments) => {
         res.json({appointments:appointments});
     }).catch((err) => {
         res.json({err:err});
