@@ -4,11 +4,14 @@ const Schedule = require('../modals/Schedule');
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
 
 const storage = multer.diskStorage({
-    destination: './uploads',
+    destination: './uploads/doctor',
     filename: function (req, file, callback){
-        callback(null, file.originalname);
+        const imageID = uuidv4();
+        const uploadName = imageID+file.originalname;
+        callback(null, uploadName);
     }
 
 });
@@ -19,14 +22,15 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
 
     let fullName = req.body.fullName;
     let email = req.body.email;
+    let nic = req.body.nic;
     let specialty = req.body.specialty;
     let username = req.body.username;
     let mobileNumber = req.body.mobileNumber;
     let password = req.body.password;
-    let profileImage =  req.file.originalname;
+    let profileImage =  req.file.filename;
     let status = req.body.status;
 
-    const isExisting = await Doctor.findOne({"fullName": fullName});
+    const isExisting = await Doctor.findOne({"NIC": nic});
 
     if (isExisting){
         res.json({status:400, message:'Doctor already exist'})
@@ -38,6 +42,7 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
 
             fullName: fullName,
             email: email,
+            NIC: nic,
             specialty: specialty,
             username: username,
             mobileNumber: mobileNumber,
@@ -115,12 +120,12 @@ router.put("/update/:userID", upload.single('profileImage'), async (req,res) => 
         let userID = req.params.userID;
         let fullName = req.body.fullName;
         let email = req.body.email;
+        let nic = req.body.nic;
         let specialty = req.body.specialty;
         let username = req.body.username;
         let mobileNumber = req.body.mobileNumber;
         let status = req.body.status;
         let updatedValue;
-
 
         const isExisting = await Doctor.findOne({_id: userID});
 
@@ -128,6 +133,7 @@ router.put("/update/:userID", upload.single('profileImage'), async (req,res) => 
             updatedValue = {
                 fullName: fullName,
                 email: email,
+                NIC: nic,
                 specialty: specialty,
                 username: username,
                 mobileNumber: mobileNumber,
@@ -136,7 +142,7 @@ router.put("/update/:userID", upload.single('profileImage'), async (req,res) => 
         }
 
         else{
-            let profileImage =  req.file.originalname;
+            let profileImage = req.file.filename;
             updatedValue = {
                 fullName: fullName,
                 email: email,
@@ -211,7 +217,41 @@ router.route("/:doctorID").delete((req,res) => {
 
 })
 
+router.route("/search/:key").get((req,res) => {
 
+    const key = req.params.key;
+
+    Doctor.find({'fullName':new RegExp(key,'i')}).then((doctor) => {
+        res.json({doctor});
+    }).catch((err) => {
+        res.json({err});
+    })
+
+})
+
+router.delete("/:doctorID/:timeSlotID", async (req,res) => {
+
+    try {
+        const doctorID = req.params.doctorID;
+        const timeSlotID = req.params.timeSlotID;
+
+        const isExisting = await Doctor.findById(doctorID).findOneAndDelete({timeSlots: {$elemMatch: {_id:timeSlotID}}})
+
+        // const isExisting = await Doctor.update({_id: doctorID}, {$pull: {$timeSlots: {_id: timeSlotID}}})
+            .then((res) => {
+            res.json({status: 200, message: 'successfully deleted'})
+        }).catch(err => {
+            res.json({status: 400, error: err})
+        })
+    }
+    catch (e) {
+        res.json({status: 400, error: e})
+    }
+
+
+
+
+})
 
 
 module.exports = router;
