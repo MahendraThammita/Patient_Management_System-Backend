@@ -210,4 +210,16 @@ router.get("/appointments/pending", async(req, res) => {
 
 })
 
+router.put("/appointments/update/:ID", async(req, res) => {
+
+    let ID = req.params.ID;
+    let timeSlot = req.body.time;
+    const appointments = await Appointment.findOneAndUpdate({_id: ID},{$set: {appointmentTimeSlot: timeSlot}}).then((appointment) => {
+        res.json({status: 200, message: 'successfully updated'})
+    }).catch((err) => {
+        res.json({error:err});
+    })
+
+})
+
 module.exports = router;
