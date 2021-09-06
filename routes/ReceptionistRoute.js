@@ -179,7 +179,7 @@ router.put("/update/:userID", async (req,res) => {
 
 })
 
-router.get("/appointments/pending", async(req, res) => {
+router.get("/appointments/current", async(req, res) => {
 
     const appointments = await Appointment.find({'approvedStatus': true}).populate('patient').populate('doctor').then((appointments) => {
         res.json({appointments:appointments});
@@ -192,7 +192,7 @@ router.get("/appointments/pending", async(req, res) => {
 router.get("/appointments/view/:ID", async(req, res) => {
 
     let ID = req.params.ID;
-    const appointments = await Appointment.find({_id: ID}).then((appointment) => {
+    const appointments = await Appointment.find({_id: ID}).populate('patient').populate('doctor').then((appointment) => {
         res.json({appointment});
     }).catch((err) => {
         res.json({err:err});
