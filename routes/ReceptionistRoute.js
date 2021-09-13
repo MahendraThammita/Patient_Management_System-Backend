@@ -210,4 +210,16 @@ router.get("/appointments/pending", async(req, res) => {
 
 })
 
+router.get("/appointments/date/:date", async(req, res) => {
+
+    let date = req.params.date;
+
+    const appointments = await Appointment.find({'appointmentDate': {$lt:date}}).populate('patient').populate('doctor').then((appointments) => {
+        res.json({appointments:appointments});
+    }).catch((err) => {
+        res.json({err:err});
+    })
+
+})
+
 module.exports = router;
