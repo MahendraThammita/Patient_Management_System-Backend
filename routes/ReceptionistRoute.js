@@ -222,4 +222,16 @@ router.put("/appointments/update/:ID", async(req, res) => {
 
 })
 
+
+router.delete("/appointments/delete/:ID", async(req, res) => {
+
+    let ID = req.params.ID;
+    const appointments = await Appointment.findOneAndDelete({_id: ID}).then((response) => {
+        res.json({status: 200, message: 'successfully deleted'})
+    }).catch((err) => {
+        res.json({error:err});
+    })
+
+})
+
 module.exports = router;
