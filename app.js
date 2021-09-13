@@ -5,7 +5,6 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const router = express.Router({});
 const app = express();
-const nodemailer = require('nodemailer');
 
 require('dotenv/config')
 const session = require('express-session')
