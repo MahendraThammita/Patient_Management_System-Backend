@@ -229,24 +229,38 @@ router.route("/search/:key").get((req,res) => {
 
 })
 
-router.delete("/:doctorID/:timeSlotID", async (req,res) => {
+// router.delete("/:doctorID/:timeSlotID", async (req,res) => {
+//
+//     try {
+//         const doctorID = req.params.doctorID;
+//         const timeSlotID = req.params.timeSlotID;
+//
+//         const isExisting = await Doctor.findById(doctorID).findOneAndDelete({timeSlots: {$elemMatch: {_id:timeSlotID}}})
+//
+//         // const isExisting = await Doctor.update({_id: doctorID}, {$pull: {$timeSlots: {_id: timeSlotID}}})
+//             .then((res) => {
+//             res.json({status: 200, message: 'successfully deleted'})
+//         }).catch(err => {
+//             res.json({status: 400, error: err})
+//         })
+//     }
+//     catch (e) {
+//         res.json({status: 400, error: e})
+//     }
+//
+// })
 
-    try {
-        const doctorID = req.params.doctorID;
-        const timeSlotID = req.params.timeSlotID;
+router.delete("/:doctorID/delete-time-slot/:ID", async (req,res) => {
 
-        const isExisting = await Doctor.findById(doctorID).findOneAndDelete({timeSlots: {$elemMatch: {_id:timeSlotID}}})
+    const doctorID = req.params.doctorID;
+    const timeSlotID = req.params.ID;
 
-        // const isExisting = await Doctor.update({_id: doctorID}, {$pull: {$timeSlots: {_id: timeSlotID}}})
-            .then((res) => {
-            res.json({status: 200, message: 'successfully deleted'})
-        }).catch(err => {
-            res.json({status: 400, error: err})
-        })
-    }
-    catch (e) {
-        res.json({status: 400, error: e})
-    }
+    const deleted = await Doctor.updateOne({_id: doctorID}, {$pull: {timeSlots: {_id:timeSlotID}}}).then((res) => {
+        res.json({status:200, message:'deleted'});
+    }).catch((e) => {
+        res.json({status:400, error:e});
+    })
+
 
 
 

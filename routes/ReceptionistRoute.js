@@ -210,4 +210,28 @@ router.get("/appointments/pending", async(req, res) => {
 
 })
 
+router.put("/appointments/update/:ID", async(req, res) => {
+
+    let ID = req.params.ID;
+    let timeSlot = req.body.time;
+    const appointments = await Appointment.findOneAndUpdate({_id: ID},{$set: {appointmentTimeSlot: timeSlot}}).then((appointment) => {
+        res.json({status: 200, message: 'successfully updated'})
+    }).catch((err) => {
+        res.json({error:err});
+    })
+
+})
+
+
+router.delete("/appointments/delete/:ID", async(req, res) => {
+
+    let ID = req.params.ID;
+    const appointments = await Appointment.findOneAndDelete({_id: ID}).then((response) => {
+        res.json({status: 200, message: 'successfully deleted'})
+    }).catch((err) => {
+        res.json({error:err});
+    })
+
+})
+
 module.exports = router;
