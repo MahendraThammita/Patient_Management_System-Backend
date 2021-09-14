@@ -15,11 +15,7 @@ const nurseSchema = new Schema({
         type: String,
         required: true
     },
-<<<<<<< HEAD
-    NIC: {
-=======
     nic: {
->>>>>>> master
         type: String,
         required: true
     },
