@@ -52,7 +52,9 @@ router.post('/reg',async (req,res) =>{
         age,
         dateOfBirth,
         profession,
-        address,
+        addressLine1,
+        addressLine2,
+        city,
         phone,
         email,
         password,
@@ -71,7 +73,9 @@ router.post('/reg',async (req,res) =>{
             age:age,
             dateOfBirth:dateOfBirth,
             profession:profession,
-            address:address,
+            addressLine1:addressLine1,
+            addressLine2:addressLine2,
+            city:city,
             phone:phone,
             email:email,
             password:pass,
@@ -89,5 +93,17 @@ router.post('/reg',async (req,res) =>{
     }
     // console.log(pass)
  })
+
+ router.route("/:patientID").get((req,res) => {
+
+    const patientID = req.params.patientID;
+
+    Doctor.find({_id:patientID}).then((patient) => {
+        res.json({patient});
+    }).catch((err) => {
+        res.json({err});
+    })
+
+})
 
 module.exports = router;

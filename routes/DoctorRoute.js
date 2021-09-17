@@ -22,6 +22,7 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
 
     let fullName = req.body.fullName;
     let email = req.body.email;
+    let nic = req.body.nic;
     let specialty = req.body.specialty;
     let username = req.body.username;
     let mobileNumber = req.body.mobileNumber;
@@ -29,7 +30,7 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
     let profileImage =  req.file.filename;
     let status = req.body.status;
 
-    const isExisting = await Doctor.findOne({"fullName": fullName});
+    const isExisting = await Doctor.findOne({"NIC": nic});
 
     if (isExisting){
         res.json({status:400, message:'Doctor already exist'})
@@ -41,6 +42,7 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
 
             fullName: fullName,
             email: email,
+            NIC: nic,
             specialty: specialty,
             username: username,
             mobileNumber: mobileNumber,
@@ -118,6 +120,7 @@ router.put("/update/:userID", upload.single('profileImage'), async (req,res) => 
         let userID = req.params.userID;
         let fullName = req.body.fullName;
         let email = req.body.email;
+        let nic = req.body.nic;
         let specialty = req.body.specialty;
         let username = req.body.username;
         let mobileNumber = req.body.mobileNumber;
@@ -130,6 +133,7 @@ router.put("/update/:userID", upload.single('profileImage'), async (req,res) => 
             updatedValue = {
                 fullName: fullName,
                 email: email,
+                NIC: nic,
                 specialty: specialty,
                 username: username,
                 mobileNumber: mobileNumber,
@@ -225,6 +229,43 @@ router.route("/search/:key").get((req,res) => {
 
 })
 
+// router.delete("/:doctorID/:timeSlotID", async (req,res) => {
+//
+//     try {
+//         const doctorID = req.params.doctorID;
+//         const timeSlotID = req.params.timeSlotID;
+//
+//         const isExisting = await Doctor.findById(doctorID).findOneAndDelete({timeSlots: {$elemMatch: {_id:timeSlotID}}})
+//
+//         // const isExisting = await Doctor.update({_id: doctorID}, {$pull: {$timeSlots: {_id: timeSlotID}}})
+//             .then((res) => {
+//             res.json({status: 200, message: 'successfully deleted'})
+//         }).catch(err => {
+//             res.json({status: 400, error: err})
+//         })
+//     }
+//     catch (e) {
+//         res.json({status: 400, error: e})
+//     }
+//
+// })
+
+router.delete("/:doctorID/delete-time-slot/:ID", async (req,res) => {
+
+    const doctorID = req.params.doctorID;
+    const timeSlotID = req.params.ID;
+
+    const deleted = await Doctor.updateOne({_id: doctorID}, {$pull: {timeSlots: {_id:timeSlotID}}}).then((res) => {
+        res.json({status:200, message:'deleted'});
+    }).catch((e) => {
+        res.json({status:400, error:e});
+    })
+
+
+
+
+
+})
 
 
 module.exports = router;
