@@ -38,6 +38,8 @@ app.use(bodyParser.json())
 //socket.io implementation
 const server = http.createServer(app)
 
+//========================================== START OF socket.io chat feature implementation DNT ========================================
+
 const io = new Server(server,{
     cors : {
         origin : "http://localhost:3000",
@@ -81,6 +83,9 @@ io.on("connection", (socket) =>{
         socket.to(data.room).emit("receive_message",data)
     })
 })
+
+//========================================== END OF socket.io chat feature implementation DNT ========================================
+
 
 //routes
 app.use('/',Health)
