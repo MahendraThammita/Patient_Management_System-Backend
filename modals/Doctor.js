@@ -42,7 +42,8 @@ const doctorSchema = new Schema({
     status: {
         type: String,
         required: true
-    }
+    },
+    recentChats:[{type : Schema.Types.ObjectId, ref : 'Chat'}]
 })
 const Doctor = mongoose.model("Doctor", doctorSchema);
 module.exports = Doctor;
