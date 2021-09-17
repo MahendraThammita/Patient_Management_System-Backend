@@ -4,11 +4,14 @@ const Schedule = require('../modals/Schedule');
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const multer = require('multer');
+const { v4: uuidv4 } = require('uuid');
 
 const storage = multer.diskStorage({
-    destination: './uploads',
+    destination: './uploads/doctor',
     filename: function (req, file, callback){
-        callback(null, file.originalname);
+        const imageID = uuidv4();
+        const uploadName = imageID+file.originalname;
+        callback(null, uploadName);
     }
 
 });
@@ -23,7 +26,7 @@ router.post("/add", upload.single('profileImage'), async (req,res) => {
     let username = req.body.username;
     let mobileNumber = req.body.mobileNumber;
     let password = req.body.password;
-    let profileImage =  req.file.originalname;
+    let profileImage =  req.file.filename;
     let status = req.body.status;
 
     const isExisting = await Doctor.findOne({"fullName": fullName});
@@ -121,7 +124,6 @@ router.put("/update/:userID", upload.single('profileImage'), async (req,res) => 
         let status = req.body.status;
         let updatedValue;
 
-
         const isExisting = await Doctor.findOne({_id: userID});
 
         if(!req.file) {
@@ -136,7 +138,7 @@ router.put("/update/:userID", upload.single('profileImage'), async (req,res) => 
         }
 
         else{
-            let profileImage =  req.file.originalname;
+            let profileImage = req.file.filename;
             updatedValue = {
                 fullName: fullName,
                 email: email,
@@ -184,7 +186,7 @@ router.post("/signin", (req, res, next) => {
             email: getUser.email,
             userId: getUser._id
         }, "X7ZUG_hmbC58ZCUCko1usvKMVCVwNKMC-XCcNX_zXh3EwYFSz6dxCAOJ3w885nqmrZNVujk-TqyNXOCu1MXg1v8y28hil_sQTLxKOtNq-w3qS1yTcFuXVSoiJEpYrACAevY98rI53NTp3ki-uWjUVayGNi16_pRpWwfzMhYHUyp-AX9NnbFSwwelYgZmjzoxqXe0bjgDZBLVUiU9-Vge8NO4tXJaZwrWQ5N9zIjAbyieuh4lXHUB1_UdMY9E5BN6Cxpu9rBBNOHK6We2BmEcQHfs7uK7FB0jl7R8xWrGwRchHuGIqwagHPXTKYYuAMNRXfb2TgR1rY8i5ofX0_RlwQ", {
-            expiresIn: "1h"
+            expiresIn: 3600
         });
         res.status(200).json({
             token: jwtToken,
@@ -198,6 +200,30 @@ router.post("/signin", (req, res, next) => {
     });
 });
 
+
+router.route("/:doctorID").delete((req,res) => {
+
+    const doctorID = req.params.doctorID;
+
+    Doctor.findByIdAndDelete(doctorID).then(() => {
+        res.json({status:200, message:'successfully deleted'})
+    }).catch((err) => {
+        res.json({err});
+    })
+
+})
+
+router.route("/search/:key").get((req,res) => {
+
+    const key = req.params.key;
+
+    Doctor.find({'fullName':new RegExp(key,'i')}).then((doctor) => {
+        res.json({doctor});
+    }).catch((err) => {
+        res.json({err});
+    })
+
+})
 
 
 
