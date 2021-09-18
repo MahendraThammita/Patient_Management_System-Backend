@@ -7,6 +7,7 @@ const { json } = require('body-parser');
 const Doctor = require('../modals/Doctor');
 const Appointment = require('../modals/Appointment');
 const Patient = require('../modals/Patient');
+const log = require('npmlog')
 
 
 //get all doctor usernames from the datbase
@@ -136,5 +137,32 @@ router.route('/count/:id').get(authorize,async(req,res)=>{
     }
 
 })
+
+//gte all the doctors in the system
+router.route('/chat/all-docs').get(authorize, async(req,res) =>{
+    try {
+        log.info("in the chat/all-docs funstion")
+        const allDocs = await Doctor.find()
+        res.send(allDocs)
+
+    } catch (error) {
+        log.error("check the /chat/all-doc function")
+        log.error(error)
+    }
+})
+
+//gte recent chats fro the logged in user
+router.route('/chat/recent/:id').get(authorize, async(req,res) =>{
+    try {
+        log.info("in the /chat/recent function")
+        const recent = await Doctor.findOne({_id : req.params.id}).select('recentChats').populate('recentChats')
+        res.send(recent.recentChats)
+
+    } catch (error) {
+        log.error("check the /chat/all-doc function")
+        log.error(error)
+    }
+})
+
 
 module.exports = router;

@@ -7,6 +7,8 @@ const bcrypt = require("bcrypt");
 const validator = require("../Auth/validator");
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
+const nodemailer = require('nodemailer');
+const transporter = require('../utils/transporter');
 
 const storage = multer.diskStorage({
     destination: './uploads/receptionist',
@@ -206,6 +208,85 @@ router.get("/appointments/pending", async(req, res) => {
         res.json({appointments:appointments});
     }).catch((err) => {
         res.json({err:err});
+    })
+
+})
+
+router.put("/appointments/approve/:ID", async(req, res) => {
+
+    let ID = req.params.ID;
+    let email = req.body.email;
+    const approve = await Appointment.findOneAndUpdate({_id: ID},{$set: {approvedStatus: "true"}}).then((appointment) => {
+        res.json({status: 200, message: 'successfully approved'})
+
+            const mailMessage = {
+                from: 'pms@gmail.com',
+                to: email,
+                subject: 'Appointment Details',
+                html: email +'<br> Your appointment has approved'
+            };
+
+            transporter.sendMail(mailMessage);
+
+    }).catch((err) => {
+        res.json({err:err});
+    })
+})
+
+router.put("/appointments/decline/:ID", async(req, res) => {
+
+    let ID = req.params.ID;
+    let email = req.body.email;
+    const approve = await Appointment.findOneAndUpdate({_id: ID},{$set: {approvedStatus: "true", status:'declined'}}).then((appointment) => {
+        res.json({status: 200, message: 'successfully approved'})
+
+        const mailMessage = {
+            from: 'pms@gmail.com',
+            to: email,
+            subject: 'Appointment Details',
+            html: email +'<br>Sorry, Your appointment has Declined'
+        };
+
+        transporter.sendMail(mailMessage);
+
+    }).catch((err) => {
+        res.json({err:err});
+    })
+})
+
+// router.route("/appointments/pending/search/:key").get((req,res) => {
+//
+//     const key = req.params.key;
+//
+//     const result =  Appointment.find().populate('patient');
+//     Appointment.find().populate('patient').find({'fullName':new RegExp(key,'i')}).then((appointments) => {
+//         res.json({appointments});
+//     }).catch((err) => {
+//         res.json({err});
+//     })
+//
+// })
+
+router.put("/appointments/update/:ID", async(req, res) => {
+
+    let ID = req.params.ID;
+    let timeSlot = req.body.time;
+    const appointments = await Appointment.findOneAndUpdate({_id: ID},{$set: {appointmentTimeSlot: timeSlot}}).then((appointment) => {
+        res.json({status: 200, message: 'successfully updated'})
+    }).catch((err) => {
+        res.json({error:err});
+    })
+
+})
+
+
+router.delete("/appointments/delete/:ID", async(req, res) => {
+
+    let ID = req.params.ID;
+    const appointments = await Appointment.findOneAndDelete({_id: ID}).then((response) => {
+        res.json({status: 200, message: 'successfully deleted'})
+    }).catch((err) => {
+        res.json({error:err});
     })
 
 })
