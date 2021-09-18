@@ -29,6 +29,8 @@ const StaffRoute = require('./routes/StaffRoute');
 const Uploads = require('./routes/Uploads');
 const Chat = require('./modals/Chat.js');
 const Doctor = require('./modals/Doctor.js');
+const Nurse = require('./modals/Nurse');
+const Patient = require('./modals/Patient.js');
 // const TestR = require('./routes/test-controller')
 
 //Middleware
@@ -38,6 +40,8 @@ app.use(bodyParser.json())
 
 //socket.io implementation
 const server = http.createServer(app)
+
+//========================================== START OF socket.io chat feature implementation DNT ========================================
 
 const io = new Server(server,{
     cors : {
@@ -68,6 +72,41 @@ io.on("connection", (socket) =>{
         const updateUser2 = await Doctor.findOneAndUpdate({fullName : data.user2},{$push : {recentChats : saveChat._id}})
     })
 
+    //nurse join room
+
+    socket.on("join_room_nurse", async(data) =>{
+        socket.join(data.room_id)
+        log.info("SOCKT_JOIN_ROOM",`user with id: ${socket.id} joined room ${data.room_id}`)
+
+        const saveChat = await Chat.create({
+            roomId : data.room_id,
+            user1 : data.user1,
+            user2 : data.user2,
+            userType : data.userType
+        }) 
+
+        log.info(saveChat)
+        const updateUser1 = await Doctor.findOneAndUpdate({fullName : data.user1},{$push : {recentChats : saveChat._id}})
+        const updateUser2 = await Nurse.findOneAndUpdate({Fname : data.user2},{$push : {recentChats : saveChat._id}})
+    })
+
+    
+    socket.on("join_room_patient", async(data) =>{
+        socket.join(data.room_id)
+        log.info("SOCKT_JOIN_ROOM",`user with id: ${socket.id} joined room ${data.room_id}`)
+
+        const saveChat = await Chat.create({
+            roomId : data.room_id,
+            user1 : data.user1,
+            user2 : data.user2,
+            userType : data.userType
+        }) 
+
+        log.info(saveChat)
+        const updateUser1 = await Doctor.findOneAndUpdate({fullName : data.user1},{$push : {recentChats : saveChat._id}})
+        const updateUser2 = await Patient.findOneAndUpdate({email : data.user2},{$push : {recentChats : saveChat._id}})
+    })
+
     socket.on("join_room_recent", async(data) =>{
         socket.join(data.room_id)
         log.info("SOCKT_JOIN_ROOM",`user with id: ${socket.id} joined room ${data.room_id}`)
@@ -82,6 +121,9 @@ io.on("connection", (socket) =>{
         socket.to(data.room).emit("receive_message",data)
     })
 })
+
+//========================================== END OF socket.io chat feature implementation DNT ========================================
+
 
 //routes
 app.use('/',Health)
