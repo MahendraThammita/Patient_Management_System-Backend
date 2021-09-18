@@ -9,6 +9,7 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
 const transporter = require('../utils/transporter');
+const Patient = require("../modals/Patient");
 
 const storage = multer.diskStorage({
     destination: './uploads/receptionist',
@@ -258,11 +259,12 @@ router.route("/appointments/pending/search/:key").get((req,res) => {
 
     const key = req.params.key;
 
-    const result =  Appointment.find().populate('patient');
-    Appointment.find().populate('patient').find({'fullName':new RegExp(key,'i')}).then((appointments) => {
-        res.json({appointments});
-    }).catch((err) => {
-        res.json({err});
+    Patient.distinct('_id',{'fullName':new RegExp(key,'i')}).then((patient) => {
+        Appointment.find({'patient': {$in: patient}}).then((appointments) => {
+            res.json({appointments});
+        }).catch((err) => {
+            res.json({err});
+        })
     })
 
 })
