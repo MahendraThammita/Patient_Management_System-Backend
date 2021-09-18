@@ -9,6 +9,7 @@ const Appointment = require('../modals/Appointment');
 const Patient = require('../modals/Patient');
 const log = require('npmlog');
 const Nurse = require('../modals/Nurse');
+var ObjectId = require('mongoose').Types.ObjectId; 
 
 
 //get all doctor usernames from the datbase
@@ -160,7 +161,7 @@ router.route('/chat/recent/:id/:type').get(authorize, async(req,res) =>{
         res.send(recent.recentChats)
 
     } catch (error) {
-        log.error("check the /chat/all-doc function")
+        log.error("check the /chat/recent/:id/:typ")
         log.error(error)
     }
 })
@@ -173,7 +174,7 @@ router.route('/chat/all-nurses').get(async(req,res) =>{
         res.send(allNur)
 
     } catch (error) {
-        log.error("check the /chat/all-doc function")
+        log.error("check the /chat/all-nurses")
         log.error(error)
     }
 })
@@ -186,7 +187,7 @@ router.route('/chat/all-pats').get(async(req,res) =>{
         res.send(allNur)
 
     } catch (error) {
-        log.error("check the /chat/all-doc function")
+        log.error("check the /chat/all-pats")
         log.error(error)
     }
 })
@@ -199,7 +200,7 @@ router.route('/chat/recent/nurse/:id/:type').get(async(req,res) =>{
         res.send(recent.recentChats)
 
     } catch (error) {
-        log.error("check the /chat/all-doc function")
+        log.error("check the /chat/recent/nurse/:id/:type")
         log.error(error)
     }
 })
@@ -212,10 +213,24 @@ router.route('/chat/recent/patient/:id/:type').get(async(req,res) =>{
         res.send(recent.recentChats)
 
     } catch (error) {
-        log.error("check the /chat/all-doc function")
+        log.error("check the /chat/recent/patient/:id/:type")
         log.error(error)
     }
 })
+
+//get all patients
+router.route('/get/patients').get(authorize, async(req,res) =>{
+    try {
+        log.info("in the /get/patients")
+        const recent = await Patient.find()
+        res.send(recent)
+
+    } catch (error) {
+        log.error("check the /get/patients")
+        log.error(error)
+    }
+})
+
 
 
 module.exports = router;
