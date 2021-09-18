@@ -12,8 +12,9 @@ const appointmentSchema = new Schema({
         required: true
     },
     prescription:{
-        type:Array,
-        required: false
+        type: mongoose.Schema.Types.ObjectId, 
+        required: false, 
+        ref: 'prescription'
     },
     patientMessage:{
         type:String,

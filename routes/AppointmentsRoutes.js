@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Appointment = require('../modals/Appointment');
+const moment= require('moment') 
 
 
 //create appointment
@@ -11,14 +12,17 @@ router.post('/create',async (req,res) =>{
         patient,
         doctor
     } = req.body
- 
+    var hour = appointmentTimeSlot.slice(0,-3)
+    var minute = appointmentTimeSlot.slice(3)
+    var timeWithHour = moment(appointmentDate).set('hour', parseInt(hour));
+    var timeSlot = moment(timeWithHour).set('minute', parseInt(minute));
     try{
         const data = await Appointment.create({
             
             approvedStatus: false,
             status:"pending",
             patientMessage:patientMessage,
-            appointmentDate:appointmentDate,
+            appointmentDate:timeSlot,
             appointmentTimeSlot:appointmentTimeSlot,
             patient:patient,
             doctor:doctor 
@@ -70,6 +74,30 @@ router.route('/get/:id').get(async(req, res) => {
         console.log(error)
         res.json({error: error})
      }
+})
+
+//Get appointments according to the current day
+router.route('/getAppoinments_today').get(async(req, res) => {
+    
+    try {
+        await Appointment.find().then((appointments) => {
+            var todayAppointments = [];
+            appointments.map(appointment => {
+                if(moment(appointment.appointmentDate).isSame(moment() , 'day')){
+                    todayAppointments.push(appointment);
+                }
+            })
+            let sortedtodayAppointments = todayAppointments.sort(function(a, b){
+                return moment(a.appointmentDate).diff(b.appointmentDate);
+            });
+            res.json({sortedtodayAppointments});
+        }).catch((err) => {
+            res.json({err});
+        })
+    } catch (error) {
+       console.log(error)
+       res.json({error: error})
+    }
 })
 
 
