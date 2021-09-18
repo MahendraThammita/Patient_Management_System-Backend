@@ -32,7 +32,8 @@ const nurseSchema = new Schema({
         required: false,
         ref: 'Appointment'
 
-    }]
+    }],
+    recentChats:[{type : Schema.Types.ObjectId, ref : 'Chat'}]
 })
 const Nurse = mongoose.model("Nurse", nurseSchema);
 module.exports = Nurse;
