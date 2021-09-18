@@ -25,6 +25,7 @@ const ReceptionistRouter = require('./routes/ReceptionistRoute');
 const DoctorRouter = require('./routes/DoctorRoute');
 const PatientRoute = require('./routes/PatientRoutes');
 const AppointmentRoute = require('./routes/AppointmentsRoutes');
+const StaffRoute = require('./routes/StaffRoute');
 const Uploads = require('./routes/Uploads');
 const Chat = require('./modals/Chat.js');
 const Doctor = require('./modals/Doctor.js');
@@ -115,6 +116,7 @@ app.use('/receptionist', ReceptionistRouter);
 app.use('/doctor', DoctorRouter);
 app.use('/patient', PatientRoute);
 app.use('/appointment', AppointmentRoute);
+app.use('/staff', StaffRoute);
 app.use('/upload', Uploads);
 
 //connecting to the database
