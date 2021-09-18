@@ -166,7 +166,7 @@ router.route('/chat/recent/:id/:type').get(authorize, async(req,res) =>{
 })
 
 //gte all the nurses in the system
-router.route('/chat/all-nurses').get(authorize, async(req,res) =>{
+router.route('/chat/all-nurses').get(async(req,res) =>{
     try {
         log.info("in the chat/all-nurses funstion")
         const allNur = await Nurse.find()
@@ -178,11 +178,37 @@ router.route('/chat/all-nurses').get(authorize, async(req,res) =>{
     }
 })
 
+//gte all the nurses in the system
+router.route('/chat/all-pats').get(async(req,res) =>{
+    try {
+        log.info("in the chat/all-nurses funstion")
+        const allNur = await Patient.find()
+        res.send(allNur)
+
+    } catch (error) {
+        log.error("check the /chat/all-doc function")
+        log.error(error)
+    }
+})
+
 //gte recent chats fro the logged in user fro nurses
-router.route('/chat/recent/nurse/:id/:type').get(authorize, async(req,res) =>{
+router.route('/chat/recent/nurse/:id/:type').get(async(req,res) =>{
     try {
         log.info("in the /chat/recent function")
         const recent = await Nurse.findOne({_id : req.params.id}).select('recentChats').populate('recentChats',null,{userType : req.params.type})
+        res.send(recent.recentChats)
+
+    } catch (error) {
+        log.error("check the /chat/all-doc function")
+        log.error(error)
+    }
+})
+
+//gte recent chats fro the logged in user fro nurses
+router.route('/chat/recent/patient/:id/:type').get(async(req,res) =>{
+    try {
+        log.info("in the /chat/recent function")
+        const recent = await Patient.findOne({_id : req.params.id}).select('recentChats').populate('recentChats',null,{userType : req.params.type})
         res.send(recent.recentChats)
 
     } catch (error) {
