@@ -254,18 +254,18 @@ router.put("/appointments/decline/:ID", async(req, res) => {
     })
 })
 
-// router.route("/appointments/pending/search/:key").get((req,res) => {
-//
-//     const key = req.params.key;
-//
-//     const result =  Appointment.find().populate('patient');
-//     Appointment.find().populate('patient').find({'fullName':new RegExp(key,'i')}).then((appointments) => {
-//         res.json({appointments});
-//     }).catch((err) => {
-//         res.json({err});
-//     })
-//
-// })
+router.route("/appointments/pending/search/:key").get((req,res) => {
+
+    const key = req.params.key;
+
+    const result =  Appointment.find().populate('patient');
+    Appointment.find().populate('patient').find({'fullName':new RegExp(key,'i')}).then((appointments) => {
+        res.json({appointments});
+    }).catch((err) => {
+        res.json({err});
+    })
+
+})
 
 router.put("/appointments/update/:ID", async(req, res) => {
 
