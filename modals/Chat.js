@@ -19,6 +19,10 @@ const chatSchema = new Schema({
         type: Array,
         required: false
     },
+    userType: {
+        type: String,
+        required: true
+    },
 })
 const Chat = mongoose.model("Chat", chatSchema);
 module.exports = Chat;
