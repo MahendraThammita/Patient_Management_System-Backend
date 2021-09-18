@@ -72,5 +72,17 @@ router.route('/get/:id').get(async(req, res) => {
      }
 })
 
+//delete appointment
+router.route("/delete/:appointmentID").delete((req,res) => {
+
+    const appointmentID = req.params.appointmentID;
+
+    Appointment.findByIdAndDelete(appointmentID).then(() => {
+        res.json({status:200, message:'Successfully deleted'})
+    }).catch((err) => {
+        res.json({err});
+    })
+
+})
 
 module.exports = router;

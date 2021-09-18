@@ -32,7 +32,7 @@ router.post("/login", (req, res, next) => {
         });
         res.status(200).json({
             id:getUser._id,
-            token: jwtToken,
+            email: getUser.email,
             expiresIn: 3600,
             msg: getUser
         });
@@ -94,16 +94,16 @@ router.post('/reg',async (req,res) =>{
     // console.log(pass)
  })
 
- router.route("/:patientID").get((req,res) => {
+//  router.route("/:patientID").get((req,res) => {
 
-    const patientID = req.params.patientID;
+//     const patientID = req.params.patientID;
 
-    Doctor.find({_id:patientID}).then((patient) => {
-        res.json({patient});
-    }).catch((err) => {
-        res.json({err});
-    })
+//     Doctor.find({_id:patientID}).then((patient) => {
+//         res.json({patient});
+//     }).catch((err) => {
+//         res.json({err});
+//     })
 
-})
+// })
 
 module.exports = router;
