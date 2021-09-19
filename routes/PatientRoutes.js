@@ -32,6 +32,7 @@ router.post("/login", (req, res, next) => {
         });
         res.status(200).json({
             id:getUser._id,
+            token: jwtToken,
             email: getUser.email,
             expiresIn: 3600,
             msg: getUser
@@ -92,18 +93,68 @@ router.post('/reg',async (req,res) =>{
         res.json({error: err})
     }
     // console.log(pass)
- })
+})
 
-//  router.route("/:patientID").get((req,res) => {
+router.route("/single/:patientID").get((req,res) => {
 
-//     const patientID = req.params.patientID;
+    const patientID = req.params.patientID;
 
-//     Doctor.find({_id:patientID}).then((patient) => {
-//         res.json({patient});
-//     }).catch((err) => {
-//         res.json({err});
-//     })
+    Patient.findOne({_id:patientID}).then((patient) => {
+        res.json(patient);
+    }).catch((err) => {
+        res.json({err});
+    })
 
-// })
+})
+
+//patient profile update
+router.put('/update/:patientID', async (req,res) => {
+
+    let patientID = req.params.patientID;
+    const {
+        fullName,
+        suffix,
+        age,
+        dateOfBirth,
+        profession,
+        addressLine1,
+        addressLine2,
+        city,
+        phone,
+        email,
+        guardianName,
+        guardianPhone,
+        guardianEmail
+    } = req.body
+
+    try{
+        const newData = {
+            fullName: fullName,
+            suffix: suffix,
+            age:age,
+            dateOfBirth:dateOfBirth,
+            profession:profession,
+            addressLine1:addressLine1,
+            addressLine2:addressLine2,
+            city:city,
+            phone:phone,
+            email:email,
+            guardianName:guardianName,
+            guardianPhone:guardianPhone,
+            guardianEmail:guardianEmail
+        }
+
+        const  updateValue = await Patient.findByIdAndUpdate(patientID,newData).then(() => {
+            res.json({status:200, message:'successfully updated'})
+        }).catch((err) => {
+            res.json({status:400, error:err})
+        })
+    }catch(err){
+        console.log(err)
+        res.json({error: err})
+    }
+    // console.log(pass)
+})
+
 
 module.exports = router;

@@ -56,7 +56,9 @@ router.route('/get/:id').get(async(req, res) => {
                     "appointmentId" : item._id,
                     "appointmentDate" : item.appointmentDate,
                     "appointmentTimeSlot" : item.appointmentTimeSlot,
+                    "doctorID": item.doctor._id,
                     "doctor" : item.doctor.fullName,
+                    "appointmentMsg" : item.patientMessage,
                     "appointmentStatus" : [String(item.approvedStatus)]
                 }
                 // console.log(item)
@@ -73,7 +75,7 @@ router.route('/get/:id').get(async(req, res) => {
 })
 
 //delete appointment
-router.route("/delete/:appointmentID").delete((req,res) => {
+router.route("/delete/:appointmentID").get((req,res) => {
 
     const appointmentID = req.params.appointmentID;
 
@@ -83,6 +85,42 @@ router.route("/delete/:appointmentID").delete((req,res) => {
         res.json({err});
     })
 
+})
+
+
+//patient profile update
+router.put('/update/:appointmentId', async (req,res) => {
+
+    let appointmentId = req.params.appointmentId;
+    const {
+        patientMessage,
+        appointmentDate,
+        appointmentTimeSlot,
+        doctor,
+        patient
+    } = req.body
+
+    try{
+        const newData = {
+            approvedStatus: false,
+            status:"pending",
+            patientMessage:patientMessage,
+            appointmentDate:appointmentDate,
+            appointmentTimeSlot:appointmentTimeSlot,
+            patient:patient,
+            doctor:doctor 
+        }
+
+        const  updateValue = await Appointment.findByIdAndUpdate(appointmentId,newData).then(() => {
+            res.json({status:200, message:'successfully updated'})
+        }).catch((err) => {
+            res.json({status:400, error:err})
+        })
+    }catch(err){
+        console.log(err)
+        res.json({error: err})
+    }
+    // console.log(pass)
 })
 
 module.exports = router;
