@@ -52,7 +52,7 @@ router.route('/get/:id').get(async(req, res) => {
     
      try {
         var test = []
-        await Appointment.find({ patient: req.params.id}).populate('doctor')
+        await Appointment.find({ patient: req.params.id}).populate('doctor').populate('patient')
         .then(data => {
             
             data.map(item => {
@@ -76,11 +76,33 @@ router.route('/get/:id').get(async(req, res) => {
      }
 })
 
+ //get appointment by appointment id
+ router.route('/getById/:id').get(async(req, res) => {
+    
+    try {
+       await Appointment.find({ _id: req.params.id})
+       .populate('doctor')
+       .populate('patient')
+       .then(data => {
+            var age = moment().diff(data[0].patient.dateOfBirth, 'years',false);
+            res.json({data : data , age:age});
+        }).catch((err) => {
+            res.json({err});
+        })
+    } catch (error) {
+       console.log(error)
+       res.json({error: error})
+    }
+})
+
 //Get appointments according to the current day
 router.route('/getAppoinments_today').get(async(req, res) => {
     
     try {
-        await Appointment.find().then((appointments) => {
+        await Appointment.find({})
+        .populate('patient' , 'fullName age dateOfBirth')
+        .populate('doctor' , 'fullName email')
+        .then((appointments) => {
             var todayAppointments = [];
             appointments.map(appointment => {
                 if(moment(appointment.appointmentDate).isSame(moment() , 'day')){
