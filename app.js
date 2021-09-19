@@ -28,6 +28,7 @@ const AppointmentRoute = require('./routes/AppointmentsRoutes');
 const StaffRoute = require('./routes/StaffRoute');
 const Reports = require('./routes/ReportsActions');
 const Uploads = require('./routes/Uploads');
+const PrescriptionRoute = require('./routes/PrescriptionRoutes');
 const Chat = require('./modals/Chat.js');
 const Doctor = require('./modals/Doctor.js');
 const Nurse = require('./modals/Nurse');
@@ -138,7 +139,9 @@ app.use('/patient', PatientRoute);
 app.use('/appointment', AppointmentRoute);
 app.use('/staff', StaffRoute);
 app.use('/upload', Uploads);
+app.use('/prescription', PrescriptionRoute);
 app.use('/reports', Reports);
+
 
 //connecting to the database
 mongoose.connect(
