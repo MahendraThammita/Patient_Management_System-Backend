@@ -49,7 +49,7 @@ router.post("/register", upload.single('profileImage'),async (req,res) => {
 
         user.save().then(() => {
             res.json({status:201, message:'user registered'})
-        }).catch((err) => {
+        }).catch((err) => { 
             res.json({status:400,message:err})
         })
     }

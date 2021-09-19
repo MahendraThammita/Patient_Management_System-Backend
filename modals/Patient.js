@@ -63,6 +63,7 @@ const patientSchema = new Schema({
         type: Array,
         required: false
     },
+    recentChats:[{type : Schema.Types.ObjectId, ref : 'Chat'}]
 })
 const Patient = mongoose.model("patient", patientSchema);
 module.exports = Patient;

@@ -25,7 +25,7 @@ const appointmentSchema = new Schema({
         required:false
     },
     appointmentDate:{
-        type:String,
+        type:Date,
         required:true
     },
     appointmentTimeSlot:{
