@@ -105,7 +105,7 @@ router.route('/getAppoinments_today').get(async(req, res) => {
         .then((appointments) => {
             var todayAppointments = [];
             appointments.map(appointment => {
-                if(moment(appointment.appointmentDate).isSame(moment() , 'day')){
+                if(moment(appointment.appointmentDate).isSame(moment() , 'day') && appointment.prescription == null){
                     todayAppointments.push(appointment);
                 }
             })

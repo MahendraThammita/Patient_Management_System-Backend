@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const Appointment = require('../modals/Prescription');
+const Appointment = require('../modals/Appointment');
 const moment= require('moment'); 
 const Prescription = require('../modals/Prescription');
 const ObjectId = require('mongodb').ObjectID;
@@ -34,35 +34,17 @@ router.post('/create',async (req,res) =>{
             doctor:doctor,
             status:status,
         }).then(async (prescription) => {
-            const isExisting = await Appointment.findById({_id: ObjectId('61463268cc91d13ac47b30ec')} , function (err, app) {console.log(app)});
-            // var _id = mongoose.mongo.ObjectId("61463268cc91d13ac47b30ec");
-            //const isExisting = await Appointment.findById('61463268cc91d13ac47b30ec');
-            const doesAppointmentExit = await Appointment.exists({ _id: '61463268cc91d13ac47b30ec' });
-            const updateValue = { prescription: prescription._id  , patientMessage : 'mahendra'};
-            // await Appointment.findByIdAndUpdate(appointmentId,updateValue).then(()=>{
-            //     res.json({status:200, message:"ok"})
-            // }).catch((err) => {
-            //     res.json({status:400, error:err})
-            // })
-            // await Appointment.countDocuments({_id: appointmentId}, async (err, count) => { 
-            //     if(count>0){
-            //         const updateValue = { prescription: prescription._id };
-            //         await Appointment.findByIdAndUpdate(appointmentId,updateValue).then(()=>{
-            //             res.json({status:200, message:"ok"})
-            //         }).catch((err) => {
-            //             res.json({status:400, error:err})
-            //         })
-            //     }
-            // });
-            // const updateValue = { prescription: prescription._id };
-            // if(isExisting){
-            //     await Appointment.findByIdAndUpdate(appointmentId,updateValue).then(()=>{
-            //         res.json({status:200, message:"ok"})
-            //     }).catch((err) => {
-            //         res.json({status:400, error:err})
-            //     })
-            // }
-            //res.json({status:200, message:"ok"})
+            
+            await Appointment.countDocuments({_id: appointmentId}, async (err, count) => { 
+                if(count>0){
+                    const updateValue = { prescription: prescription._id };
+                    await Appointment.findByIdAndUpdate(appointmentId,updateValue).then(()=>{
+                        res.json({status:200, message:"ok"})
+                    }).catch((err) => {
+                        res.json({status:400, error:err})
+                    })
+                }
+            });
         }).catch((err) => {
             res.json({status:400, message:err})
         })
