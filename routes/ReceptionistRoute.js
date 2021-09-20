@@ -10,6 +10,7 @@ const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
 const transporter = require('../utils/transporter');
 const Patient = require("../modals/Patient");
+const moment = require("moment");
 
 const storage = multer.diskStorage({
     destination: './uploads/receptionist',
@@ -152,6 +153,7 @@ router.put("/update/:userID", async (req,res) => {
             }
         } else {
             let updatedValue;
+            console.log(req.file);
 
             if (req.file) {
                 let profileImage =  req.file.filename;
@@ -260,7 +262,21 @@ router.route("/appointments/pending/search/:key").get((req,res) => {
     const key = req.params.key;
 
     Patient.distinct('_id',{'fullName':new RegExp(key,'i')}).then((patient) => {
-        Appointment.find({'patient': {$in: patient}}).then((appointments) => {
+        Appointment.find({ $and:[{'patient': {$in: patient}},{'approvedStatus': false}]}).populate('patient').populate('doctor').then((appointments) => {
+            res.json({appointments});
+        }).catch((err) => {
+            res.json({err});
+        })
+    })
+
+})
+
+router.route("/appointments/current/search/:key").get((req,res) => {
+
+    const key = req.params.key;
+
+    Patient.distinct('_id',{'fullName':new RegExp(key,'i')}).then((patient) => {
+        Appointment.find({ $and:[{'patient': {$in: patient}},{'approvedStatus': true}]}).populate('patient').populate('doctor').then((appointments) => {
             res.json({appointments});
         }).catch((err) => {
             res.json({err});
@@ -296,8 +312,8 @@ router.delete("/appointments/delete/:ID", async(req, res) => {
 router.get("/appointments/date/:date", async(req, res) => {
 
     let date = req.params.date;
-
-    const appointments = await Appointment.find({'appointmentDate': {$lt:date}}).populate('patient').populate('doctor').then((appointments) => {
+    console.log(new Date(new Date(date).toISOString()));
+    const appointments = await Appointment.find({'appointmentDate': {$lt:new Date(date)}}).populate('patient').populate('doctor').then((appointments) => {
         res.json({appointments:appointments});
     }).catch((err) => {
         res.json({err:err});
