@@ -49,6 +49,18 @@ const prescriptionSchema = new Schema({
         required: true, 
         ref: 'Doctor'
     },
+    docDesc:{
+        type:String,
+        required: false
+    },
+    startWeek:{
+        type:String,
+        required: false
+    },
+    endWeek:{
+        type:String,
+        required: false
+    },
     
     
 })
