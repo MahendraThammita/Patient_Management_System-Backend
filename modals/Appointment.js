@@ -42,6 +42,18 @@ const appointmentSchema = new Schema({
         required: true, 
         ref: 'Doctor'
     },
+    tests:{
+        type: Array, 
+        required: true,
+    },
+    date:{
+        type: String, 
+        required: true,
+    },
+    time:{
+        type: String, 
+        required: true,
+    },
     
     
 })

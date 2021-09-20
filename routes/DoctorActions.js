@@ -38,7 +38,7 @@ router.route('/get-timeslots/:id').get(async(req, res) => {
 router.route('/pending/:id').get(authorize,async(req,res)=>{
 
     try {
-        const pendingApps = await Appointment.find({status : 'pending',approvedStatus : true, doctor : req.params.id}).populate('patient')
+        const pendingApps = await Appointment.find({status : 'pending',approvedStatus : true, doctor : req.params.id}).populate('patient').populate('prescription')
 
         res.send(pendingApps)
     } catch (error) {
@@ -79,7 +79,7 @@ router.route('/finished/:id').get(authorize,async(req,res)=>{
 router.route('/:id').get(authorize,async(req,res)=>{
 
     try {
-        const pendingApps = await Appointment.findOne({_id : req.params.id}).populate('patient')
+        const pendingApps = await Appointment.findOne({_id : req.params.id}).populate('patient').populate('prescription')
 
         res.json(pendingApps)
     } catch (error) {
