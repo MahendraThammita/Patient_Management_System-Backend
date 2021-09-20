@@ -12,8 +12,9 @@ const appointmentSchema = new Schema({
         required: true
     },
     prescription:{
-        type:Array,
-        required: false
+        type: mongoose.Schema.Types.ObjectId, 
+        required: false, 
+        ref: 'prescription'
     },
     patientMessage:{
         type:String,
@@ -24,7 +25,7 @@ const appointmentSchema = new Schema({
         required:false
     },
     appointmentDate:{
-        type:String,
+        type:Date,
         required:true
     },
     appointmentTimeSlot:{
@@ -40,6 +41,18 @@ const appointmentSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId, 
         required: true, 
         ref: 'Doctor'
+    },
+    tests:{
+        type: Array, 
+        required: true,
+    },
+    date:{
+        type: String, 
+        required: true,
+    },
+    time:{
+        type: String, 
+        required: true,
     },
     
     

@@ -7,7 +7,9 @@ const { json } = require('body-parser');
 const Doctor = require('../modals/Doctor');
 const Appointment = require('../modals/Appointment');
 const Patient = require('../modals/Patient');
-const log = require('npmlog')
+const log = require('npmlog');
+const Nurse = require('../modals/Nurse');
+var ObjectId = require('mongoose').Types.ObjectId; 
 
 
 //get all doctor usernames from the datbase
@@ -36,7 +38,7 @@ router.route('/get-timeslots/:id').get(async(req, res) => {
 router.route('/pending/:id').get(authorize,async(req,res)=>{
 
     try {
-        const pendingApps = await Appointment.find({status : 'pending',approvedStatus : true, doctor : req.params.id}).populate('patient')
+        const pendingApps = await Appointment.find({status : 'pending',approvedStatus : true, doctor : req.params.id}).populate('patient').populate('prescription')
 
         res.send(pendingApps)
     } catch (error) {
@@ -77,7 +79,7 @@ router.route('/finished/:id').get(authorize,async(req,res)=>{
 router.route('/:id').get(authorize,async(req,res)=>{
 
     try {
-        const pendingApps = await Appointment.findOne({_id : req.params.id}).populate('patient')
+        const pendingApps = await Appointment.findOne({_id : req.params.id}).populate('patient').populate('prescription')
 
         res.json(pendingApps)
     } catch (error) {
@@ -152,17 +154,83 @@ router.route('/chat/all-docs').get(authorize, async(req,res) =>{
 })
 
 //gte recent chats fro the logged in user
-router.route('/chat/recent/:id').get(authorize, async(req,res) =>{
+router.route('/chat/recent/:id/:type').get(authorize, async(req,res) =>{
     try {
         log.info("in the /chat/recent function")
-        const recent = await Doctor.findOne({_id : req.params.id}).select('recentChats').populate('recentChats')
+        const recent = await Doctor.findOne({_id : req.params.id}).select('recentChats').populate('recentChats',null,{userType : req.params.type})
         res.send(recent.recentChats)
 
     } catch (error) {
-        log.error("check the /chat/all-doc function")
+        log.error("check the /chat/recent/:id/:typ")
         log.error(error)
     }
 })
+
+//gte all the nurses in the system
+router.route('/chat/all-nurses').get(async(req,res) =>{
+    try {
+        log.info("in the chat/all-nurses funstion")
+        const allNur = await Nurse.find()
+        res.send(allNur)
+
+    } catch (error) {
+        log.error("check the /chat/all-nurses")
+        log.error(error)
+    }
+})
+
+//gte all the nurses in the system
+router.route('/chat/all-pats').get(async(req,res) =>{
+    try {
+        log.info("in the chat/all-nurses funstion")
+        const allNur = await Patient.find()
+        res.send(allNur)
+
+    } catch (error) {
+        log.error("check the /chat/all-pats")
+        log.error(error)
+    }
+})
+
+//gte recent chats fro the logged in user fro nurses
+router.route('/chat/recent/nurse/:id/:type').get(async(req,res) =>{
+    try {
+        log.info("in the /chat/recent function")
+        const recent = await Nurse.findOne({_id : req.params.id}).select('recentChats').populate('recentChats',null,{userType : req.params.type})
+        res.send(recent.recentChats)
+
+    } catch (error) {
+        log.error("check the /chat/recent/nurse/:id/:type")
+        log.error(error)
+    }
+})
+
+//gte recent chats fro the logged in user fro nurses
+router.route('/chat/recent/patient/:id/:type').get(async(req,res) =>{
+    try {
+        log.info("in the /chat/recent function")
+        const recent = await Patient.findOne({_id : req.params.id}).select('recentChats').populate('recentChats',null,{userType : req.params.type})
+        res.send(recent.recentChats)
+
+    } catch (error) {
+        log.error("check the /chat/recent/patient/:id/:type")
+        log.error(error)
+    }
+})
+
+//get all patients
+router.route('/get/patients').get(authorize, async(req,res) =>{
+    try {
+        log.info("in the /get/patients")
+        const recent = await Patient.find()
+        res.send(recent)
+
+    } catch (error) {
+        log.error("check the /get/patients")
+        log.error(error)
+    }
+})
+
 
 
 module.exports = router;
