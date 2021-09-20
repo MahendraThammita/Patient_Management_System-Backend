@@ -38,6 +38,8 @@ class InvoiceGenerator{
 
     generateTable(doc) {
         const tableTop = 270
+        const tableTop2 = 340
+        const tableTop3 = 420
         const patientCodeX = 120
         const dateCodeX = 50
         const doctorX = 350
@@ -46,15 +48,26 @@ class InvoiceGenerator{
         const priceX = 300
         const amountX = 350
 
+        const bp_SystolicX = 50
+        const bp_DiastolicX = 150
+        const ageX = 250  
+
+        const testX = 50
+
         doc
-            .fontSize(10)
+            .fontSize(15)
             .text('Date', dateCodeX, tableTop, {bold: true})
             .text('Patient Name', patientCodeX, tableTop, {bold: true})
             .text('Patient Weight', weightX, tableTop)
             .text('Doctor Name', doctorX, tableTop)
             .text('Description', descriptionX, tableTop)
+            .text('bp_Systolic', bp_SystolicX, tableTop2)
+            .text('bp_Diastolic', bp_DiastolicX, tableTop2)
+            .text('Age', ageX, tableTop2)
+            .text('Test List', testX, tableTop3)
 
             const y = tableTop + 25 + (0 * 25)
+            const y2 = tableTop2 + 25 + (0 * 25)
 
             doc
                 .fontSize(10)
@@ -64,8 +77,20 @@ class InvoiceGenerator{
                 .text(this.invoice.doctor, doctorX, y)
                 .text(this.invoice.docDesc, descriptionX, y)
 
-        const items = this.invoice.items
+                .text(this.invoice.bp_Systolic, bp_SystolicX, y2)
+                .text(this.invoice.bp_Diastolic, bp_DiastolicX, y2)
+                .text(this.invoice.age, ageX, y2)
+
+        const items = this.invoice.test
         let i = 0
+
+        for(i = 0; i < items.length; i++){
+            const y3 = tableTop3 + 25 + (i * 25)
+
+            doc
+            .fontSize(10)
+            .text(items[i], testX, y3)
+        }
     }
 
     generateFooter(doc) {

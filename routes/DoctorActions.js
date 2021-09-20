@@ -20,6 +20,18 @@ router.route('/get-my-name').get(async(req, res, next) => {
     res.send(data) 
 })
 
+router.route('/get/tot/count').get(async(req, res, next) => {
+    const docCount = await Doctor.find().count()
+    const patCount = await Patient.find().count()
+
+    data = {
+        doc : docCount,
+        pat : patCount
+    }
+    //send the data to the user
+    res.json(data) 
+})
+
 //get timeslots for a doctor
 router.route('/get-timeslots/:id').get(async(req, res) => {
     if (req.params && req.params.id) {
