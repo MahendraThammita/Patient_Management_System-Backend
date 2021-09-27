@@ -312,13 +312,20 @@ router.delete("/appointments/delete/:ID", async(req, res) => {
 router.get("/appointments/date/:date", async(req, res) => {
 
     let date = req.params.date;
-    console.log(new Date(new Date(date).toISOString()));
-    const appointments = await Appointment.find({'appointmentDate': {$lt:new Date(date)}}).populate('patient').populate('doctor').then((appointments) => {
-        res.json({appointments:appointments});
+    const appointments = await Appointment.find({})
+    .populate('patient')
+    .populate('doctor')
+    .then((appointments) => {
+        var olderAppointments = [];
+        appointments.map(appointment => {
+            if(moment(appointment.appointmentDate).isSameOrBefore(moment(date) , 'day')){
+                olderAppointments.push(appointment);
+            }
+        })
+        res.json({appointments:olderAppointments});
     }).catch((err) => {
         res.json({err:err});
     })
 
 })
-
 module.exports = router;
