@@ -156,15 +156,32 @@ router.route('/getAppoinments_today').get(async(req, res) => {
         .populate('doctor' , 'fullName email')
         .then((appointments) => {
             var todayAppointments = [];
+            var todayCompleatedAppointmentsCount = 0;
+            
             appointments.map(appointment => {
                 if(moment(appointment.appointmentDate).isSame(moment() , 'day') && appointment.prescription == null){
                     todayAppointments.push(appointment);
+                }
+                if(moment(appointment.appointmentDate).isSame(moment() , 'day') && appointment.prescription != null){
+                    todayCompleatedAppointmentsCount++
                 }
             })
             let sortedtodayAppointments = todayAppointments.sort(function(a, b){
                 return moment(a.appointmentDate).diff(b.appointmentDate);
             });
-            res.json({sortedtodayAppointments});
+            let totalAppointmentCOunt = appointments.length;
+            let appointmentsToComplete = todayAppointments.length;
+            let compleatedAppointments = todayCompleatedAppointmentsCount;
+            let appointmentsCountForToday = appointmentsToComplete + compleatedAppointments;
+            let completePercentage = (compleatedAppointments/appointmentsCountForToday) * 100;
+            let incompletePercentage = 100 - completePercentage;
+            res.json({sortedtodayAppointments : sortedtodayAppointments , 
+                totalAppointmentCOunt : totalAppointmentCOunt, 
+                appointmentsToComplete : appointmentsToComplete, 
+                compleatedAppointments : compleatedAppointments, 
+                appointmentsCountForToday:appointmentsCountForToday,
+                completePercentage:completePercentage,
+            incompletePercentage:incompletePercentage});
         }).catch((err) => {
             res.json({err});
         })
