@@ -134,8 +134,9 @@ router.put('/update/:appointmentId', async (req,res) => {
             doctor:doctor 
         }
 
+        // console.log('function called');
         const  updateValue = await Appointment.findByIdAndUpdate(appointmentId,newData).then(() => {
-            res.json({status:200, message:'successfully updated'})
+            res.json({status:200, message:'ok'})
         }).catch((err) => {
             res.json({status:400, error:err})
         })
