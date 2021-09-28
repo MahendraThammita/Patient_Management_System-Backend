@@ -191,5 +191,39 @@ router.route('/getAppoinments_today').get(async(req, res) => {
     }
 })
 
+//Get Lab test pending lab test requests
+router.route('/getSampleCollections_today').get(async(req, res) => {
+    
+    try {
+        await Appointment.find({})
+        .populate('patient' , 'fullName age dateOfBirth')
+        .populate('doctor' , 'fullName email')
+        .then((appointments) => {
+            var testRequestsArray = [];
+            // var todayCompleatedAppointmentsCount = 0;
+            
+            appointments.map(appointment => {
+                if(appointment.tests.length > 0){
+                    appointment.tests.map(test => {
+                        test.map(item => {
+                            singleTestObject = {
+                                testName : item,
+                                appointMent : appointment
+                            }
+                            testRequestsArray.push(singleTestObject);
+                        })
+                    })
+                }
+            })
+            res.json({testRequests : testRequestsArray})
+        }).catch((err) => {
+            res.json({err});
+        })
+    } catch (error) {
+       console.log(error)
+       res.json({error: error})
+    }
+})
+
 
 module.exports = router;
