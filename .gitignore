@@ -1,3 +1,4 @@
 node_modules
 .env
 utils/transporter.js
+test2.pdf
