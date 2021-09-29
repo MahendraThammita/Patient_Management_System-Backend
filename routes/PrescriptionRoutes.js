@@ -9,6 +9,7 @@ const fs = require('fs')
 const InvoiceGenerator = require('../Asset/InvoiceGenerator')
 const AWS = require('aws-sdk')
 require('dotenv/config')
+const LabTest = require('../modals/Test');
 
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_S3_K,
@@ -75,6 +76,25 @@ router.route('/update/prescription/:id').patch(authorize, async (req, res) => {
             new: true
         })
         const updateApp = await Appointment.findOneAndUpdate({ _id: req.body.appId }, { tests: req.body.test, date: req.body.date, time: req.body.time })
+        const appointment = await Appointment.findById(req.body.appId);
+        
+        //Creates lab-tests for each test in request
+        let testsArray = req.body.test;
+        if(testsArray.length > 0){
+            testsArray.map(test => {
+                test.map(async item => {
+                    singleTestObject = {
+                        testName : item,
+                        Appointment : req.body.appId,
+                        status : 'Speciman Pending',
+                        doctor:appointment.doctor,
+                        patient:appointment.patient,
+                        date:req.body.date
+                    }
+                    await LabTest.create(singleTestObject);
+                })
+            })
+        }
 
         if (req.body.createDoc === 'yes') {
 
