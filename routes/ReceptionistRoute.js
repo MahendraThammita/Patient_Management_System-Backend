@@ -104,7 +104,7 @@ router.get("/:userID", validator, async(req, res) => {
 
 })
 
-router.put("/update/:userID", async (req,res) => {
+router.put("/update/:userID",upload.single('profileImage'), async (req,res) => {
 
     let updateValue;
     try {
@@ -219,14 +219,17 @@ router.put("/appointments/approve/:ID", async(req, res) => {
 
     let ID = req.params.ID;
     let email = req.body.email;
-    const approve = await Appointment.findOneAndUpdate({_id: ID},{$set: {approvedStatus: "true"}}).then((appointment) => {
+    const approve = await Appointment.findOneAndUpdate({_id: ID},{$set: {approvedStatus: "true"}}).populate('doctor').then((appointment) => {
         res.json({status: 200, message: 'successfully approved'})
 
+        const doctor = appointment.doctor.fullName;
+        console.log(doctor);
             const mailMessage = {
                 from: 'pms@gmail.com',
                 to: email,
                 subject: 'Appointment Details',
-                html: email +'<br> Your appointment has approved'
+                html: email +'<br> Your appointment has approved with ' + doctor + ' <br>' +
+                    ' Date: ' + appointment.appointmentDate + '<br> Time ' + appointment.appointmentTimeSlot
             };
 
             transporter.sendMail(mailMessage);
