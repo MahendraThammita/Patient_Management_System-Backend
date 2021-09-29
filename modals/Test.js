@@ -30,7 +30,7 @@ const testSchema = new Schema({
     },
     labStaff: {
         type: mongoose.Schema.Types.ObjectId, 
-        required: true,
+        required: false,
         ref: 'LabStaff'
 
     },
@@ -39,7 +39,12 @@ const testSchema = new Schema({
         required: true,
         ref: 'Appointment'
 
-    }
+    },
+    doctor:{
+        type: mongoose.Schema.Types.ObjectId, 
+        required: true, 
+        ref: 'Doctor'
+    },
 })
 const Test = mongoose.model("NuTestrse", testSchema);
 module.exports = Test;
