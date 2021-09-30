@@ -65,7 +65,7 @@ router.route('/getById/:id').get(async(req, res) => {
        res.json({error: error})
     }})
 
-    //patient profile update
+//Create lab test request by nurse
 router.put('/createRequest', async (req,res) => {
     try{
         const  updateValue = await Test.findOneAndUpdate({ _id: req.body._id }, { specimonNumber: req.body.specimonNumber, specimonType: req.body.specimonType, status: req.body.status }).then(() => {
@@ -172,6 +172,22 @@ router.route('/getByIdForStaff/:id').get(async(req, res) => {
        console.log(error)
        res.json({error: error})
     }})
+
+    //get test by test id for lab staff
+    router.put('/saveReport', async (req,res) => {
+        try{
+            const  updateValue = await Test.findOneAndUpdate({ _id: req.body._id }, { specialRemarks: req.body.specialRemarks, results: req.body.results , status: req.body.status}).then(() => {
+                res.json({status:200, message:'ok'})
+            }).catch((err) => {
+                res.json({status:400, error:err})
+            })
+        }catch(err){
+            console.log(err)
+            res.json({error: err})
+        }
+        // console.log(pass)
+    
+    })
 
 
 module.exports = router;
