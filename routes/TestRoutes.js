@@ -155,5 +155,23 @@ router.route('/getTestsForLabStaff').get(async(req, res) => {
     }
 })
 
+//get test by test id for lab staff
+router.route('/getByIdForStaff/:id').get(async(req, res) => {
+    
+    try {
+       await Test.find({ _id: req.params.id})
+       .populate('doctor')
+       .populate('patient')
+       .then(data => {
+            var age = moment().diff(data[0].patient.dateOfBirth, 'years',false);
+            res.json({data : data , age:age});
+        }).catch((err) => {
+            res.json({err});
+        })
+    } catch (error) {
+       console.log(error)
+       res.json({error: error})
+    }})
+
 
 module.exports = router;
