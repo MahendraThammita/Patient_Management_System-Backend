@@ -89,7 +89,8 @@ router.route('/update/prescription/:id').patch(authorize, async (req, res) => {
                         status : 'Speciman Pending',
                         doctor:appointment.doctor,
                         patient:appointment.patient,
-                        date:req.body.date
+                        date:appointment.appointmentDate,
+                        TimeSlot:appointment.appointmentTimeSlot,
                     }
                     await LabTest.create(singleTestObject);
                 })
