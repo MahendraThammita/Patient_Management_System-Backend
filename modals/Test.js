@@ -3,6 +3,11 @@ const  Schema = mongoose.Schema;
 
 const testSchema = new Schema({
 
+    testName: {
+        type: String,
+        required: true,
+        trim: true
+    },
     specimonNumber: {
         type: String,
         required: false,
@@ -47,6 +52,20 @@ const testSchema = new Schema({
     date:{
         type: String, 
         required: false,
+    },
+    TimeSlot:{
+        type:String,
+        required:false
+    },
+    specimonNumber: {
+        type: String,
+        required: false,
+        trim: true
+    },
+    specimonType: {
+        type: String,
+        required: false,
+        trim: true
     },
 })
 const Test = mongoose.model("Tests", testSchema);
