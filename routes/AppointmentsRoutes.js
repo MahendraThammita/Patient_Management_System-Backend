@@ -37,7 +37,7 @@ router.post('/create',async (req,res) =>{
     }
  })
 
- router.route("/").get((req,res) => {
+router.route("/").get((req,res) => {
 
     Appointment.find().then((appointments) => {
         res.json({appointments});
@@ -76,6 +76,17 @@ router.route('/get/:id').get(async(req, res) => {
         console.log(error)
         res.json({error: error})
      }
+})
+
+//get all details of appointments for a patient
+router.route('/getAll/:id').get(async(req, res) => {
+    try {
+        const appointments = await Appointment.find({patient : req.params.id})
+
+        res.send(appointments)
+    } catch (error) {
+        res.send(error)
+    }
 })
 
 

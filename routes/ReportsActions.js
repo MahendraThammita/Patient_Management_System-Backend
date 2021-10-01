@@ -37,7 +37,31 @@ router.route('/get/report/:id').get(authorize, async(req,res) =>{
     }
 })
 
+//get report by appointment
+router.route('/get/report/appointment/:id').get(async(req,res) =>{
+    try {
+        // log.info("in the /get/patients")
+        const report = await Appointment.find({_id:req.params.id}).select('reports')
+        var repoList = []
+        var atomRepo = []
+        report.map(item =>{
+            repoList.push(item.reports)
+        })
 
+        repoList.map(item =>{
+            item.map(item2 =>{
+                log.info(JSON.stringify(item2))
+                atomRepo.push(item2)
+            })
+        })
+
+        res.send(atomRepo)
+
+    } catch (error) {
+        log.error("check the /get/report/:id function")
+        log.error(error)
+    }
+})
 
 
 module.exports = router;
