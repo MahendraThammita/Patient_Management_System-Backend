@@ -29,11 +29,6 @@ class LabReportGenerator{
             .lineTo(endOfPage,200)
             .stroke()
                 
-        // doc.text(`DISCLAIMER: ${this.invoice.memo || 'N/A'}`, 50, 210)
-
-        // doc.moveTo(beginningOfPage,250)
-        //     .lineTo(endOfPage,250)
-        //     .stroke()
 
     }
 
@@ -55,10 +50,13 @@ class LabReportGenerator{
             .stroke()
             .moveDown()
 
+            .fontSize(18)
+            .text(`${this.test.testName}`, 250, 290)
+
             .fontSize(15)
-            .text(col1, 70, y)
-            .text(col2, 180, y)
-            .text(col3, 350, y);
+            .text(`Test Item`, 70, 310)
+            .text(`Value/Range`, 180, 310)
+            .text(`Remark`, 350, 310);
       }
 
       generateTableRow(doc, y, col1, col2, col3) {
@@ -71,7 +69,7 @@ class LabReportGenerator{
 
       generateResultsTable(doc) {
         let i,
-          resultsTableTop = 280;
+          resultsTableTop = 320;
       
         for (i = 0; i < this.test.results.length; i++) {
           const item = this.test.results[i];
@@ -94,6 +92,17 @@ class LabReportGenerator{
             })
     }
 
+    printRemarks(doc) {
+        doc
+            .fontSize(10)
+            .text(`Special Remarks : `, 50, 550, {
+                align: 'left'
+            })
+            .text(`${this.test.specialRemarks}`, 70, 570, {
+                align: "left"
+            })
+    }
+
     generateLabReport() {
         let theOutput = new PDFGenerator 
 
@@ -111,6 +120,8 @@ class LabReportGenerator{
         this.generatePatientInformation(theOutput)
 
         this.generateResultsTable(theOutput)
+
+        this.printRemarks(theOutput)
 
         this.generateFooter(theOutput)
         
