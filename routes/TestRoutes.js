@@ -2,6 +2,7 @@ const router = require('express').Router();
 require('dotenv').config();
 const moment= require('moment') 
 const Test = require('../modals/Test');
+const Appointment = require('../modals/Appointment');
 const fs = require('fs')
 const LabReportGenerator = require('../Asset/LabReportGenerator')
 const AWS = require('aws-sdk')
@@ -209,6 +210,7 @@ router.route('/getByIdForStaff/:id').get(async(req, res) => {
                 //  res.json({data : data , age:age});
                 const filename = "Prescription-" + new Date(new Date).toISOString().slice(0,10) + "-" + req.body._id + ".pdf"
                 const testId = req.body._id
+                const appointmentId = data[0].Appointment;
 
                 try {
 
@@ -234,9 +236,10 @@ router.route('/getByIdForStaff/:id').get(async(req, res) => {
                                     name: data.Key
                                 }
     
-                                const updateApp = await Test.updateOne({_id : testId},{reportUrl : rdata.url})
+                                const updateTest = await Test.updateOne({_id : testId},{reportUrl : rdata.url})
+                                const updateApp = await Appointment.updateOne({_id : appointmentId},{$push : {reports : rdata}})
     
-                                res.status(201).json({ "url": data.Location, "filename": data.Key })
+                                res.status(201).json({ "url": data.Location, "filename": data.Key , message : "ok"})
                             })
     
     
