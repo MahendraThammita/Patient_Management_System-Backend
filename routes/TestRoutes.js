@@ -263,4 +263,46 @@ router.route('/getByIdForStaff/:id').get(async(req, res) => {
     })
 
 
+    router.route('/caregorizedTests').get(async(req, res) => {
+    
+        try {
+            await Test.find({})
+            .populate('patient' , 'fullName age dateOfBirth')
+            .populate('doctor' , 'fullName email')
+            .then((tests) => {
+                var todayNewAppointments = [];
+                var completedAppointments = [];
+                var publishedAppointments = [];
+                var InProgressAppointments = [];
+                
+                tests.map(test => {
+                    
+                    if(moment(test.date).isSame(moment() , 'day') && test.status === "New"){
+                        todayNewAppointments.push(test)
+                    }
+                    if(test.status === "Completed"){
+                        completedAppointments.push(test)
+                    }
+                    if(test.status === "Published"){
+                        publishedAppointments.push(test)
+                    }
+                    if(test.status === "InProgress"){
+                        InProgressAppointments.push(test)
+                    }
+                })
+                res.json({todayNewAppointments : todayNewAppointments , 
+                    completedAppointments : completedAppointments, 
+                    publishedAppointments : publishedAppointments, 
+                    InProgressAppointments : InProgressAppointments, 
+                });
+            }).catch((err) => {
+                res.json({err});
+            })
+        } catch (error) {
+           console.log(error)
+           res.json({error: error})
+        }
+    })
+
+
 module.exports = router;
