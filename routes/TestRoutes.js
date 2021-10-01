@@ -2,6 +2,14 @@ const router = require('express').Router();
 require('dotenv').config();
 const moment= require('moment') 
 const Test = require('../modals/Test');
+const fs = require('fs')
+const LabReportGenerator = require('../Asset/LabReportGenerator')
+const AWS = require('aws-sdk')
+
+const s3 = new AWS.S3({
+    accessKeyId: process.env.AWS_S3_K,
+    secretAccessKey: process.env.AWS_S3_SK
+})
 
 //Get Lab tests for nurse
 router.route('/getSampleCollections_today').get(async(req, res) => {
@@ -97,7 +105,7 @@ router.route('/getTestsForLabStaff').get(async(req, res) => {
             var inProgressTestsCount = 0;
             
             tests.map(test => {
-                if(moment(test.date).isSame(moment() , 'day') && test.specimonNumber == null){
+                if(moment(test.date).isSame(moment() , 'day') && test.status === "Speciman Pending"){
                     todayTests.push(test);
                 }
                 if(moment(test.date).isSame(moment() , 'day') && test.specimonNumber != null){
@@ -181,6 +189,68 @@ router.route('/getByIdForStaff/:id').get(async(req, res) => {
             }).catch((err) => {
                 res.json({status:400, error:err})
             })
+        }catch(err){
+            console.log(err)
+            res.json({error: err})
+        }
+        // console.log(pass)
+    
+    })
+
+    //get test by test id for lab staff
+    router.put('/publishReport', async (req,res) => {
+        try{
+            const  updateValue = await Test.findOneAndUpdate({ _id: req.body._id }, { specialRemarks: req.body.specialRemarks, results: req.body.results , status: req.body.status})
+            await Test.find({ _id: req.body._id})
+            .populate('doctor')
+            .populate('patient')
+            .then(data => {
+                //  var age = moment().diff(data[0].patient.dateOfBirth, 'years',false);
+                //  res.json({data : data , age:age});
+                const filename = "Prescription-" + new Date(new Date).toISOString().slice(0,10) + "-" + req.body._id + ".pdf"
+                const testId = req.body._id
+
+                try {
+
+                    new LabReportGenerator(data[0]).generateLabReport()
+                    setTimeout(async() => {
+                        fs.readFile('labReport.pdf', async(err, data) => {
+                            if (err) throw err;
+    
+                            const params = {
+                                ACL: "public-read",
+                                Bucket: process.env.BKT_NAME,
+                                Key: filename,
+                                Body: data
+                            };
+    
+                            s3.upload(params, async(error, data) => {
+                                if (error) throw error;
+    
+                                console.log(data);
+    
+                                const rdata = {
+                                    url: data.Location,
+                                    name: data.Key
+                                }
+    
+                                const updateApp = await Test.updateOne({_id : testId},{reportUrl : rdata.url})
+    
+                                res.status(201).json({ "url": data.Location, "filename": data.Key })
+                            })
+    
+    
+    
+                        })
+                    }, 1000);
+    
+                } catch (error) {
+                    console.log(error);
+                }
+
+             }).catch((err) => {
+                 res.json({err});
+             })
         }catch(err){
             console.log(err)
             res.json({error: err})

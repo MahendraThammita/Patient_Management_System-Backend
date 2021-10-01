@@ -67,6 +67,11 @@ const testSchema = new Schema({
         required: false,
         trim: true
     },
+    reportUrl: {
+        type: String,
+        required: false,
+        trim: true
+    },
 })
 const Test = mongoose.model("Tests", testSchema);
 module.exports = Test;
