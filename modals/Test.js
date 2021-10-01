@@ -3,21 +3,20 @@ const  Schema = mongoose.Schema;
 
 const testSchema = new Schema({
 
-    name: {
+    testName: {
         type: String,
         required: true,
         trim: true
     },
     specimonNumber: {
         type: String,
-        required: true,
+        required: false,
         trim: true
     },
-    results: [{
-        componant: {type: String,trim: true},
-        value: {type: String,trim: true},
-        remark: {type: String,trim: true},
-    }],
+    results: {
+        type: Array, 
+        required: false,
+    },
     specialRemarks: {
         type: String,
         required: false,
@@ -45,6 +44,34 @@ const testSchema = new Schema({
         required: true, 
         ref: 'Doctor'
     },
+    patient:{
+        type: mongoose.Schema.Types.ObjectId, 
+        required: true, 
+        ref: 'patient'
+    },
+    date:{
+        type: String, 
+        required: false,
+    },
+    TimeSlot:{
+        type:String,
+        required:false
+    },
+    specimonNumber: {
+        type: String,
+        required: false,
+        trim: true
+    },
+    specimonType: {
+        type: String,
+        required: false,
+        trim: true
+    },
+    reportUrl: {
+        type: String,
+        required: false,
+        trim: true
+    },
 })
-const Test = mongoose.model("NuTestrse", testSchema);
+const Test = mongoose.model("Tests", testSchema);
 module.exports = Test;

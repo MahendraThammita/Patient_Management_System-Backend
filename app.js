@@ -29,11 +29,12 @@ const StaffRoute = require('./routes/StaffRoute');
 const Reports = require('./routes/ReportsActions');
 const Uploads = require('./routes/Uploads');
 const PrescriptionRoute = require('./routes/PrescriptionRoutes');
+const Test = require('./routes/TestRoutes');
 const Chat = require('./modals/Chat.js');
 const Doctor = require('./modals/Doctor.js');
 const Nurse = require('./modals/Nurse');
 const Patient = require('./modals/Patient.js');
-const { report } = require('./routes/HelathCheck');
+const { report } = require('./routes/TestRoutes');
 // const TestR = require('./routes/test-controller')
 
 //Middleware
@@ -141,7 +142,7 @@ app.use('/staff', StaffRoute);
 app.use('/upload', Uploads);
 app.use('/prescription', PrescriptionRoute);
 app.use('/reports', Reports);
-
+app.use('/tests', Test);
 
 //connecting to the database
 mongoose.connect(
